@@ -1,0 +1,101 @@
+<!-- 메인 페이지 템플릿 -->
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>메인 페이지</title>
+    <!-- Kaikas, MetaMask, Klip 연동을 위한 예시 스크립트 (실제 연동은 각 지갑의 공식 문서 참고) -->
+    <script>
+        // 세션에 로그인 완료 표시를 남기는 함수
+        function setWalletLoginAndRedirect() {
+            // /wallet-login 엔드포인트에 POST 요청
+            fetch('/wallet-login', {method: 'POST'}).then(() => {
+                // 세션 저장 후 루트로 이동
+                window.location.href = '/';
+            });
+        }
+        // MetaMask 로그인 함수 예시
+        async function connectMetaMask() {
+            if (window.ethereum) {
+                try {
+                    // MetaMask 계정 요청
+                    const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
+                    alert('MetaMask 연결 성공!\n지갑 주소: ' + accounts[0]);
+                    setWalletLoginAndRedirect();
+                } catch (error) {
+                    alert('MetaMask 연결 실패: ' + error.message);
+                }
+            } else {
+                alert('MetaMask가 설치되어 있지 않습니다.');
+            }
+        }
+        // Kaikas 로그인 함수 예시
+        async function connectKaikas() {
+            if (window.klaytn) {
+                try {
+                    // Kaikas 계정 요청
+                    const accounts = await window.klaytn.enable();
+                    alert('Kaikas 연결 성공!\n지갑 주소: ' + accounts[0]);
+                    setWalletLoginAndRedirect();
+                } catch (error) {
+                    alert('Kaikas 연결 실패: ' + error.message);
+                }
+            } else {
+                alert('Kaikas가 설치되어 있지 않습니다.');
+            }
+        }
+        // Klip 로그인 함수 예시 (모바일/QR 연동)
+        function connectKlip() {
+            // 실제 Klip 연동은 Klip SDK 또는 REST API를 참고해야 합니다.
+            alert('Klip 연동은 별도의 SDK/QR 코드가 필요합니다.');
+            setWalletLoginAndRedirect();
+        }
+    </script>
+</head>
+<body>
+    <h2>메인 페이지</h2>
+    <!-- 브라우저 정보 표시용 div (여기에 브라우저 종류와 userAgent가 표시됩니다) -->
+    <div id="browser-info" style="margin-bottom:10px; color:blue;"></div>
+    <div id="useragent-info" style="margin-bottom:20px; color:gray; font-size:0.9em;"></div>
+    <script>
+        // 브라우저 종류를 감지하여 div에 표시하는 함수
+        function getBrowserInfo() {
+            const userAgent = navigator.userAgent;
+            let browser = "알 수 없음";
+            if (userAgent.indexOf("Chrome") > -1 && userAgent.indexOf("Edg") === -1 && userAgent.indexOf("OPR") === -1) {
+                browser = "Chrome";
+            } else if (userAgent.indexOf("Safari") > -1 && userAgent.indexOf("Chrome") === -1) {
+                browser = "Safari";
+            } else if (userAgent.indexOf("Firefox") > -1) {
+                browser = "Firefox";
+            } else if (userAgent.indexOf("Edg") > -1) {
+                browser = "Edge";
+            } else if (userAgent.indexOf("OPR") > -1 || userAgent.indexOf("Opera") > -1) {
+                browser = "Opera";
+            } else if (userAgent.indexOf("Trident") > -1) {
+                browser = "Internet Explorer";
+            }
+            // div에 브라우저 정보 표시
+            document.getElementById("browser-info").innerText = "현재 사용 중인 브라우저: " + browser;
+            // userAgent 전체 문자열도 별도 div에 표시
+            document.getElementById("useragent-info").innerText = "userAgent: " + userAgent;
+        }
+        // 페이지 로드 시 브라우저 정보 표시
+        window.onload = function() {
+            getBrowserInfo();
+        };
+    </script>
+    <!-- Klip 로그인 버튼 -->
+    <button onclick="connectKlip()">Klip으로 로그인</button>
+    <br><br>
+    <!-- Kaikas 로그인 버튼 -->
+    <button onclick="connectKaikas()">Kaikas로 로그인</button>
+    <br><br>
+    <!-- MetaMask 로그인 버튼 -->
+    <button onclick="connectMetaMask()">MetaMask로 로그인</button>
+    <br><br>
+    <!-- 각 버튼은 실제 지갑 연동을 위한 예시 코드입니다. -->
+    <p>※ 실제 서비스 적용 시 각 지갑의 공식 문서를 참고하여 보안에 유의하세요.</p>
+</body>
+</html> 
