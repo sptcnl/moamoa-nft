@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>메인 페이지</title>
-    <!-- Kaikas, MetaMask, Klip 연동을 위한 예시 스크립트 (실제 연동은 각 지갑의 공식 문서 참고) -->
+    
     <script>
         // 세션에 로그인 완료 표시를 남기는 함수
         function setWalletLoginAndRedirect() {
@@ -15,21 +15,7 @@
                 window.location.href = '/';
             });
         }
-        // MetaMask 로그인 함수 예시
-        async function connectMetaMask() {
-            if (window.ethereum) {
-                try {
-                    // MetaMask 계정 요청
-                    const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
-                    alert('MetaMask 연결 성공!\n지갑 주소: ' + accounts[0]);
-                    setWalletLoginAndRedirect();
-                } catch (error) {
-                    alert('MetaMask 연결 실패: ' + error.message);
-                }
-            } else {
-                alert('MetaMask가 설치되어 있지 않습니다.');
-            }
-        }
+        
         // Kaikas 로그인 함수 예시
         async function connectKaikas() {
             if (window.klaytn) {
@@ -45,12 +31,7 @@
                 alert('Kaikas가 설치되어 있지 않습니다.');
             }
         }
-        // Klip 로그인 함수 예시 (모바일/QR 연동)
-        function connectKlip() {
-            // 실제 Klip 연동은 Klip SDK 또는 REST API를 참고해야 합니다.
-            alert('Klip 연동은 별도의 SDK/QR 코드가 필요합니다.');
-            setWalletLoginAndRedirect();
-        }
+        
     </script>
 </head>
 <body>
@@ -86,15 +67,11 @@
             getBrowserInfo();
         };
     </script>
-    <!-- Klip 로그인 버튼 -->
-    <button onclick="connectKlip()">Klip으로 로그인</button>
-    <br><br>
+    
     <!-- Kaikas 로그인 버튼 -->
     <button onclick="connectKaikas()">Kaikas로 로그인</button>
     <br><br>
-    <!-- MetaMask 로그인 버튼 -->
-    <button onclick="connectMetaMask()">MetaMask로 로그인</button>
-    <br><br>
+    
     <!-- 각 버튼은 실제 지갑 연동을 위한 예시 코드입니다. -->
     <p>※ 실제 서비스 적용 시 각 지갑의 공식 문서를 참고하여 보안에 유의하세요.</p>
 </body>
