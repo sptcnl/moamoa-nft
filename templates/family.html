@@ -9,6 +9,7 @@
     <!-- Web3.js 또는 Kaikas/MetaMask/Klip SDK 필요 (실제 연동 시) -->
     <script src="https://cdn.jsdelivr.net/npm/web3@1.10.0/dist/web3.min.js"></script>
     <script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4?cache-bust=1"></script>
     <style>
         table { border-collapse: collapse; width: 100%; }
         th, td { border: 1px solid #aaa; padding: 8px; text-align: center; }
@@ -21,21 +22,21 @@
         #qr-reader__dashboard_section_swaplink { display: none; }
     </style>
 </head>
-<body>
+<body class="grid place-items-center">
     <!-- 상단 메뉴 -->
-    <nav style="margin-bottom:20px; border-bottom:1px solid #ccc; padding-bottom:8px;">
-        <a href="/" style="margin-right:20px;">홈</a>
-        <a href="/family" style="margin-right:20px;">NFT</a>
+    <nav class="block text-center w-full bg-gray-200" style="margin-bottom:20px; padding-top:5px; padding-bottom:8px;">
+        <a href="/" class="hover:text-gray-500" style="padding-right:15px; border-right:1px solid #7c7c7c;">홈</a>
+        <a href="/family" class="hover:text-gray-500" style="padding-left:10px; margin-right: 10px;">NFT</a>
         {% if is_logged_in %}
-            <button onclick="logout()" style="margin-left:10px;">로그아웃</button>
+            <button onclick="logout()" style="padding-left:15px; border-left:1px solid #7c7c7c;">로그아웃</button>
         {% endif %}
     </nav>
-    <h2>가족 관리 페이지</h2>
+    <h2 class="text-3xl font-semibold tracking-tight text-balance sm:text-3xl text-center text-gray-700 mt-4" style="margin-bottom: 40px;">가족 관리 페이지</h2>
     <!-- QR코드 카메라로 내 지갑 주소 입력 -->
-    <div style="margin-bottom:10px;">
-        <button onclick="showQrReader()">QR코드로 내 지갑 주소 입력</button>
-        <div id="qr-reader" style="display:none;"></div>
+    <div class="flex justify-end w-full mb-2 mr-8 md:mr-15" style="margin-bottom:10px;">
+        <button class="hover:text-gray-500" onclick="showQrReader()">QR등록</button>
     </div>
+    <div id="qr-reader" style="display:none;"></div>
     <!-- 내 지갑 주소 및 오너 여부 표시 -->
     <div>
         <b>내 지갑 주소:</b> <span id="my-address">-</span>
@@ -276,7 +277,7 @@
                 });
             }
         }
-       
+
         // 로그아웃 함수 (서버에 로그아웃 요청 후 홈으로 이동)
         function logout() {
             fetch('/logout', {method: 'POST'}).then(() => {
