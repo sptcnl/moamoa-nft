@@ -31,6 +31,16 @@ try:
         contract_abi = json.load(f)
 except Exception:
     contract_abi = []
+    print("가족 컨트랙트 ABI 로드 실패")
+
+# NFT 컨트랙트 ABI 로드
+try:
+    with open("static/moa_nft_abi.json") as f:
+        nft_abi = json.load(f)
+    print("NFT 컨트랙트 ABI 로드 성공")
+except Exception:
+    nft_abi = []
+    print("NFT 컨트랙트 ABI 로드 실패")
 
 # 루트 - 로그인 여부에 따라 main.html 또는 family.html 렌더링
 @app.get("/", response_class=HTMLResponse)
@@ -47,6 +57,12 @@ async def read_root(request: Request):
 async def family_page(request: Request):
     is_logged_in = bool(request.session.get("wallet_login"))
     return templates.TemplateResponse("family.html", {"request": request, "contract_address": CONTRACT_ADDRESS, "contract_abi": contract_abi, "is_logged_in": is_logged_in})
+
+# NFT 페이지 - nft.html 렌더링
+@app.get("/nft", response_class=HTMLResponse)
+async def nft_page(request: Request):
+    is_logged_in = bool(request.session.get("wallet_login"))
+    return templates.TemplateResponse("nft.html", {"request": request, "contract_address": CONTRACT_ADDRESS, "contract_abi": nft_abi, "is_logged_in": is_logged_in})
 
 # 지갑 로그인 성공 시 세션에 wallet_login 값을 true로 저장하는
 @app.post("/wallet-login")
