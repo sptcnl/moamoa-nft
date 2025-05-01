@@ -36,6 +36,13 @@
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4?cache-bust=1"></script>
 </head>
 <body class="grid place-items-center">
+    <nav class="block text-center w-full bg-gray-200" style="margin-bottom:20px; padding-top:5px; padding-bottom:8px;">
+        <a href="/" class="hover:text-gray-500" style="padding-right:15px; border-right:1px solid #7c7c7c;">홈</a>
+        <a href="#" onclick="alert('준비중'); return false;" class="hover:text-gray-500" style="padding-left:10px; margin-right: 10px;">NFT</a>
+        {% if is_logged_in %}
+            <button onclick="logout()" style="padding-left:15px; border-left:1px solid #7c7c7c;">로그아웃</button>
+        {% endif %}
+    </nav>
     <h2 class="text-3xl font-semibold tracking-tight text-balance sm:text-3xl text-center text-gray-700 mt-4">로그인</h2>
     <!-- 브라우저 정보 표시용 div (여기에 브라우저 종류와 userAgent가 표시됩니다) -->
     <div class="text-center text-sm mt-4" id="browser-info" style="margin-bottom:10px; color:blue;"></div>
