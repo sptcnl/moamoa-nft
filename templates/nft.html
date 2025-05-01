@@ -497,8 +497,8 @@
     <script src="https://cdn.jsdelivr.net/npm/caver-js@1.8.0/dist/caver.min.js"></script>
     
     <script>
-        // 컨트랙트 정보 - 서버에서 전달받은 값 사용
-        const CONTRACT_ADDRESS = "{{ contract_address }}"; // 스마트 컨트랙트 주소 (서버에서 받아옴)
+        // 컨트랙트 정보 - 직접 선언
+        const CONTRACT_ADDRESS = "0xF9CE32956caE3154E9f2b8bD7b27ffA58A19785a"; // 스마트 컨트랙트 주소 (직접 선언)
         const ABI = JSON.parse(`{{ contract_abi | tojson | safe }}`); // 스마트 컨트랙트 ABI (함수 정보, 서버에서 받아옴)
         let contract; // 컨트랙트 인스턴스
         let walletConnecting = false; // 지갑 연결 중복 방지용 변수
