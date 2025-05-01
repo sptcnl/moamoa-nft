@@ -1,0 +1,1451 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NFT</title>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Noto Sans KR', sans-serif;
+        }
+
+        :root {
+            --primary-color: #6c5ce7;
+            --secondary-color: #a29bfe;
+            --accent-color: #fd79a8;
+            --text-color: #2d3436;
+            --light-color: #f5f6fa;
+            --border-color: #dfe6e9;
+            --card-bg: #ffffff;
+            --header-bg: #f1f2f6;
+        }
+
+        body {
+            background-color: #f9f9f9;
+            color: var(--text-color);
+            line-height: 1.6;
+            padding: 0;
+        }
+
+        header {
+            background-color: var(--header-bg);
+            padding: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        header span {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: var(--primary-color);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        .upload-btn {
+            background-color: var(--header-bg);
+            border: 2px solid var(--primary-color);
+            color: var(--primary-color);
+            padding: 12px 15px;
+            cursor: pointer;
+            margin: 0 20px 20px;
+            width: calc(100% - 40px);
+            text-align: center;
+            font-weight: 500;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .upload-btn:hover {
+            background-color: var(--primary-color);
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        .nft-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+            padding: 0 20px;
+        }
+
+        .nft-item {
+            text-align: center;
+            background-color: var(--card-bg);
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .nft-item:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .nft-image {
+            width: 100%;
+            height: 150px;
+            background-color: #eee;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .nft-name {
+            padding: 12px;
+            font-size: 0.95rem;
+            color: var(--text-color);
+            font-weight: 500;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 40px 20px;
+            color: #aaa;
+            font-size: 1.2rem;
+            grid-column: 1 / -1;
+            background-color: var(--card-bg);
+            border-radius: 10px;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        /* 모달 스타일 */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.6);
+            animation: fadeIn 0.3s ease;
+            overflow-y: auto; /* 내용이 많을 경우 스크롤 허용 */
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .modal-content {
+            background-color: white;
+            margin: 5% auto; /* 상단 마진을 15%에서 5%로 줄여 위치를 더 위로 올림 */
+            width: 85%;
+            max-width: 500px;
+            padding: 25px;
+            position: relative;
+            border-radius: 15px;
+            box-shadow: 0 5px 25px rgba(0, 0, 0, 0.3);
+            animation: slideUp 0.4s ease;
+        }
+
+        @media (max-height: 700px) {
+            .modal-content {
+                margin: 2% auto; /* 작은 화면에서는 더 적은 마진 적용 */
+            }
+        }
+
+        @keyframes slideUp {
+            from { transform: translateY(50px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        .close {
+            position: absolute;
+            right: 15px;
+            top: 10px;
+            font-size: 24px;
+            cursor: pointer;
+            color: #aaa;
+            transition: color 0.3s ease;
+        }
+
+        .close:hover {
+            color: var(--primary-color);
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: var(--text-color);
+        }
+
+        input, textarea {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            font-size: 0.95rem;
+            transition: border 0.3s ease;
+        }
+
+        input:focus, textarea:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 2px rgba(108, 92, 231, 0.2);
+        }
+
+        .submit-btn {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 12px;
+            border: none;
+            width: 100%;
+            margin-top: 15px;
+            cursor: pointer;
+            border-radius: 8px;
+            font-weight: 500;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .submit-btn:hover {
+            background-color: var(--secondary-color);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        .image-preview {
+            width: 100%;
+            height: 180px;
+            background-color: var(--light-color);
+            border: 2px dashed var(--border-color);
+            margin-top: 10px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border-radius: 8px;
+            overflow: hidden;
+            transition: border-color 0.3s ease;
+        }
+
+        .image-preview:hover {
+            border-color: var(--primary-color);
+        }
+
+        .image-preview img {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+        }
+        
+        /* 로딩 애니메이션 */
+        .loader {
+            display: none;
+            border: 5px solid #f3f3f3;
+            border-top: 5px solid var(--primary-color);
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 20px auto;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        /* 알림 메시지 */
+        .notification {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            padding: 15px 20px;
+            border-radius: 10px;
+            color: white;
+            font-weight: 500;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            transform: translateY(100px);
+            opacity: 0;
+            transition: all 0.5s ease;
+            z-index: 2000;
+        }
+        
+        .notification.show {
+            transform: translateY(0);
+            opacity: 1;
+        }
+        
+        .notification.success {
+            background-color: #00b894;
+        }
+        
+        .notification.error {
+            background-color: #e74c3c;
+        }
+
+        /* 지갑 연결 버튼 */
+        .connect-wallet-btn {
+            background-color: var(--secondary-color);
+            color: white;
+            padding: 12px 25px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            margin: 20px auto;
+            display: block;
+        }
+
+        .connect-wallet-btn:hover {
+            background-color: var(--primary-color);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        /* 가족 주소 목록 스타일 */
+        .family-address-list {
+            max-height: 150px;
+            overflow-y: auto;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 8px;
+            background-color: var(--light-color);
+        }
+        
+        .family-address-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 5px;
+            padding: 5px;
+            border-radius: 4px;
+            transition: background-color 0.2s;
+        }
+        
+        .family-address-item:hover {
+            background-color: rgba(0, 0, 0, 0.05);
+        }
+        
+        .family-address-item input[type="checkbox"] {
+            margin-right: 10px;
+            width: auto;
+            cursor: pointer;
+        }
+        
+        .family-nickname {
+            font-weight: 500;
+            margin-right: 8px;
+        }
+        
+        .family-address {
+            font-size: 0.8rem;
+            color: #666;
+            word-break: break-all;
+            flex: 1;
+        }
+        
+        .no-family {
+            text-align: center;
+            color: #aaa;
+            padding: 10px;
+        }
+
+        .detail-text {
+            padding: 10px;
+            background-color: #f9f9f9;
+            border-radius: 5px;
+            margin-top: 5px;
+            min-height: 20px;
+            word-break: break-all;
+        }
+        
+        .button-group {
+            margin-top: 15px;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div style="display: flex; align-items: center;">
+            <span style="margin-right: 20px;">NFT</span>
+            <a href="family.html" class="back-button" style="background-color: var(--secondary-color); color: white; padding: 6px 12px; border-radius: 6px; text-decoration: none; font-size: 0.9rem; display: flex; align-items: center; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+                <span style="margin-right: 5px;"></span> 가족 관리
+            </a>
+        </div>
+        <div id="userWalletInfo" style="font-size: 0.8rem; display: none;">
+            주소: <span id="userWalletAddress" style="font-family: monospace; margin-right: 10px;"></span>
+            <button id="logoutBtn" style="padding: 3px 8px; font-size: 0.7rem; background: #f0f0f0; border: 1px solid #ccc; border-radius: 4px; cursor: pointer;">로그아웃</button>
+        </div>
+    </header>
+
+    <div class="container">
+        <button class="upload-btn" id="uploadBtn">Image upload</button>
+
+        <div id="connectWalletSection">
+            <p style="text-align: center; margin-bottom: 20px;">지갑을 연결하여 NFT를 확인하세요</p>
+            <button class="connect-wallet-btn" id="connectWalletBtn">Kaikas 지갑 연결</button>
+        </div>
+
+        <div class="nft-grid" id="nftGrid">
+            <!-- NFT 항목들이 이곳에 동적으로 추가됩니다 -->
+            <div class="empty-state">
+                <div>불러오는 중...</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 이미지 업로드 모달 -->
+    <div id="uploadModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <form id="nftForm">
+                <div class="image-preview" id="imagePreview">
+                    <!-- 이미지 미리보기가 여기에 표시됩니다 -->
+                </div>
+                <div class="form-group">
+                    <label for="nftImage">이미지</label>
+                    <input type="file" id="nftImage" accept="image/*">
+                </div>
+                <div class="form-group">
+                    <label for="nftName">name(이름)</label>
+                    <input type="text" id="nftName">
+                </div>
+                <div class="form-group">
+                    <label for="nftDescription">description(설명)</label>
+                    <textarea id="nftDescription" rows="2"></textarea>
+                </div>
+                <div class="form-group">
+                    <label>공유할 주소</label>
+                    <div id="familyAddressList" class="family-address-list">
+                        <!-- 가족 주소 목록이 여기에 동적으로 추가됩니다 -->
+                        <div class="no-family">가족으로 등록된 주소가 없습니다.</div>
+                    </div>
+                </div>
+                <button type="submit" class="submit-btn">등록</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- NFT 상세 정보 모달 -->
+    <div id="nftDetailModal" class="modal">
+        <div class="modal-content">
+            <span class="close" id="detailClose">&times;</span>
+            <div id="nftDetailContainer">
+                <div class="image-preview" id="detailImagePreview">
+                    <!-- 이미지가 여기에 표시됩니다 -->
+                </div>
+                <div id="detailViewMode">
+                    <div class="form-group">
+                        <label>이름</label>
+                        <div id="detailName" class="detail-text"></div>
+                    </div>
+                    <div class="form-group">
+                        <label>설명</label>
+                        <div id="detailDescription" class="detail-text"></div>
+                    </div>
+                    <div class="form-group">
+                        <label>토큰 ID</label>
+                        <div id="detailTokenId" class="detail-text"></div>
+                    </div>
+                    <div class="form-group">
+                        <label>생성일</label>
+                        <div id="detailCreatedAt" class="detail-text"></div>
+                    </div>
+                    <button type="button" id="editModeBtn" class="submit-btn" style="background-color: var(--secondary-color);">수정하기</button>
+                </div>
+                <div id="detailEditMode" style="display: none;">
+                    <form id="nftUpdateForm">
+                        <div class="form-group">
+                            <label for="updateNftImage">이미지 변경</label>
+                            <input type="file" id="updateNftImage" accept="image/*">
+                        </div>
+                        <div class="form-group">
+                            <label for="updateNftName">이름</label>
+                            <input type="text" id="updateNftName">
+                        </div>
+                        <div class="form-group">
+                            <label for="updateNftDescription">설명</label>
+                            <textarea id="updateNftDescription" rows="2"></textarea>
+                        </div>
+                        <input type="hidden" id="updateTokenId">
+                        <div class="button-group" style="display: flex; gap: 10px;">
+                            <button type="button" id="cancelEditBtn" class="submit-btn" style="background-color: #777; flex: 1;">취소</button>
+                            <button type="submit" class="submit-btn" style="flex: 1;">저장</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="loader" class="loader"></div>
+    <div id="notification" class="notification"></div>
+
+    <!-- Caver-js 라이브러리 (Klaytn 블록체인 연동용) -->
+    <script src="https://cdn.jsdelivr.net/npm/caver-js@1.8.0/dist/caver.min.js"></script>
+    
+    <script>
+        // 컨트랙트 정보 - 서버에서 전달받은 값 사용
+        const CONTRACT_ADDRESS = "{{ contract_address }}"; // 스마트 컨트랙트 주소 (서버에서 받아옴)
+        const ABI = JSON.parse(`{{ contract_abi | tojson | safe }}`); // 스마트 컨트랙트 ABI (함수 정보, 서버에서 받아옴)
+        let contract; // 컨트랙트 인스턴스
+        let walletConnecting = false; // 지갑 연결 중복 방지용 변수
+        
+        // 서버 세션에서 로그인 상태 확인 (Jinja 템플릿 변수를 자바스크립트 변수로 변환)
+        const IS_LOGGED_IN = "{{ is_logged_in }}" === "True"; 
+        
+        // 이더리움/클레이튼 주소 유효성 검사 함수
+        function isValidAddress(address) {
+            return address && typeof address === 'string' && /^0x[a-fA-F0-9]{40}$/.test(address);
+        }
+        
+        // 전역 변수
+        let caver;
+        let userAccount;
+        let isConnected = false;
+        let currentNft = null; // 현재 선택된 NFT
+
+        // DOM 요소들
+        const uploadBtn = document.getElementById('uploadBtn');
+        const uploadModal = document.getElementById('uploadModal');
+        const closeBtn = document.querySelector('.close');
+        const nftForm = document.getElementById('nftForm');
+        const nftImage = document.getElementById('nftImage');
+        const imagePreview = document.getElementById('imagePreview');
+        const nftGrid = document.getElementById('nftGrid');
+        const loader = document.getElementById('loader');
+        const notification = document.getElementById('notification');
+        const connectWalletSection = document.getElementById('connectWalletSection');
+        const connectWalletBtn = document.getElementById('connectWalletBtn');
+        
+        // NFT 상세 정보 모달 관련 요소들
+        const nftDetailModal = document.getElementById('nftDetailModal');
+        const detailClose = document.getElementById('detailClose');
+        const editModeBtn = document.getElementById('editModeBtn');
+        const cancelEditBtn = document.getElementById('cancelEditBtn');
+        const detailViewMode = document.getElementById('detailViewMode');
+        const detailEditMode = document.getElementById('detailEditMode');
+        const nftUpdateForm = document.getElementById('nftUpdateForm');
+        const updateNftImage = document.getElementById('updateNftImage');
+
+        // 이벤트 리스너
+        document.addEventListener('DOMContentLoaded', init);
+        uploadBtn.addEventListener('click', openUploadModal);
+        closeBtn.addEventListener('click', closeModal);
+        nftForm.addEventListener('submit', mintNFT);
+        nftImage.addEventListener('change', previewImage);
+        connectWalletBtn.addEventListener('click', connectKaikas);
+        document.getElementById('logoutBtn').addEventListener('click', logout);
+        
+        // NFT 상세 정보 모달 이벤트 리스너
+        detailClose.addEventListener('click', closeNftDetailModal);
+        editModeBtn.addEventListener('click', switchToEditMode);
+        cancelEditBtn.addEventListener('click', cancelEditMode);
+        nftUpdateForm.addEventListener('submit', updateNFT);
+        updateNftImage.addEventListener('change', previewUpdateImage);
+        
+        // 페이지 밖 클릭 시 모달 닫기
+        window.onclick = function(event) {
+            if (event.target == uploadModal) {
+                closeModal();
+            } else if (event.target == nftDetailModal) {
+                closeNftDetailModal();
+            }
+        };
+
+        // 페이지 초기화 함수
+        async function init() {
+            // Kaikas 지갑 연결 확인
+            if (window.klaytn) {
+                try {
+                    // Caver 인스턴스 초기화
+                    try {
+                        caver = new Caver(window.klaytn);
+                        await caver.klay.getBlockNumber(); // 연결 테스트
+                    } catch (caverError) {
+                        throw new Error('블록체인 네트워크 연결에 실패했습니다.');
+                    }
+                    
+                    // 컨트랙트 초기화
+                    try {
+                        contract = new caver.klay.Contract(ABI, CONTRACT_ADDRESS);
+                        
+                        if (!contract || !contract.methods) {
+                            throw new Error('컨트랙트 초기화 실패');
+                        }
+                    } catch (contractError) {
+                        throw new Error('컨트랙트 초기화에 실패했습니다.');
+                    }
+                    
+                    // 이미 연결되어 있는지 확인
+                    if (window.klaytn.selectedAddress) {
+                        userAccount = window.klaytn.selectedAddress;
+                        isConnected = true;
+                        
+                        // 주소 표시
+                        document.getElementById('userWalletAddress').textContent = 
+                            userAccount.substring(0, 6) + '...' + userAccount.substring(userAccount.length - 4);
+                        document.getElementById('userWalletInfo').style.display = 'block';
+                        
+                        await loadUserNFTs();
+                        connectWalletSection.style.display = 'none';
+                    } else {
+                        // 세션에 로그인 되어 있다면 자동 연결 시도
+                        if (IS_LOGGED_IN) {
+                            try {
+                                await connectKaikas();
+                            } catch (error) {
+                                connectWalletSection.style.display = 'block';
+                                displayEmptyState('지갑을 연결하여 NFT를 확인하세요');
+                            }
+                        } else {
+                            // 연결되지 않은 경우 지갑 연결 섹션 표시
+                            connectWalletSection.style.display = 'block';
+                            displayEmptyState('지갑을 연결하여 NFT를 확인하세요');
+                        }
+                    }
+
+                    // 이벤트 리스너 설정
+                    setupWalletEvents();
+                } catch (error) {
+                    displayEmptyState('Kaikas 초기화 오류: ' + error.message);
+                    showNotification('Kaikas 지갑 연결에 실패했습니다. 잠시 후 다시 시도해주세요.', 'error');
+                }
+            } else {
+                connectWalletSection.style.display = 'block';
+                displayEmptyState('Kaikas 지갑을 설치하고 연결하세요');
+            }
+        }
+        
+        // 지갑 이벤트 리스너 설정
+        function setupWalletEvents() {
+            // 계정 변경 이벤트 리스너
+            window.klaytn.on('accountsChanged', function(accounts) {
+                if (accounts.length > 0) {
+                    userAccount = accounts[0];
+                    isConnected = true;
+                    loadUserNFTs();
+                    connectWalletSection.style.display = 'none';
+                } else {
+                    disconnect();
+                }
+            });
+            
+            // 네트워크 변경 이벤트 리스너
+            window.klaytn.on('networkChanged', function(networkId) {
+                window.location.reload(); // 페이지 새로고침으로 처리
+            });
+        }
+
+        // 지갑 연결 해제 함수
+        function disconnect() {
+            userAccount = null;
+            isConnected = false;
+            connectWalletSection.style.display = 'block';
+            displayEmptyState('지갑 연결이 해제되었습니다');
+            
+            // 주소 표시 제거
+            document.getElementById('userWalletInfo').style.display = 'none';
+            document.getElementById('userWalletAddress').textContent = '';
+        }
+
+        // NFT 표시 함수
+        function displayNFTs(nfts) {
+            nftGrid.innerHTML = ''; // 기존 내용 초기화
+            
+            if (!nfts || nfts.length === 0) {
+                displayEmptyState('발행한 NFT가 없습니다');
+                return;
+            }
+            
+            nfts.forEach(nft => {
+                const nftElement = document.createElement('div');
+                nftElement.className = 'nft-item';
+                nftElement.setAttribute('data-nft-id', nft.id);
+                
+                // 이미지 데이터가 있으면 표시, 없으면 빈 공간
+                const imageHtml = nft.image ? 
+                    `<img src="${nft.image}" alt="${nft.name}" style="width:100%; height:100%; object-fit:contain;">` : 
+                    '';
+                
+                nftElement.innerHTML = `
+                    <div class="nft-image">${imageHtml}</div>
+                    <div class="nft-name">${nft.name || '이름 없음'}</div>
+                `;
+                
+                // NFT 클릭 이벤트 추가
+                nftElement.addEventListener('click', () => {
+                    openNftDetailModal(nft);
+                });
+                
+                nftGrid.appendChild(nftElement);
+            });
+        }
+
+        // 빈 상태 표시 함수
+        function displayEmptyState(message) {
+            nftGrid.innerHTML = `
+                <div class="empty-state">
+                    <div>${message}</div>
+                </div>
+            `;
+        }
+
+        // 사용자의 NFT 목록 불러오기
+        async function loadUserNFTs() {
+            if (!isConnected) {
+                displayEmptyState('지갑이 연결되어 있지 않습니다');
+                return;
+            }
+            
+            try {
+                showLoader();
+                displayEmptyState('NFT를 불러오는 중...');
+                
+                // 컨트랙트 주소 확인
+                if (!isValidAddress(CONTRACT_ADDRESS)) {
+                    displayEmptyState('컨트랙트 주소 오류');
+                    hideLoader();
+                    return;
+                }
+                
+                // 이벤트 조회 로직
+                const nfts = await fetchUserNFTs();
+                
+                // NFT 목록 표시
+                if (nfts && nfts.length > 0) {
+                    displayNFTs(nfts);
+                } else {
+                    displayEmptyState('발행한 NFT가 없습니다');
+                }
+            } catch (error) {
+                // 오류 메시지를 더 구체적으로 표시
+                let errorMessage = '알 수 없는 오류';
+                
+                if (error.message) {
+                    errorMessage = error.message.substring(0, 100);
+                } else if (error.code) {
+                    errorMessage = `오류 코드: ${error.code}, 메시지: ${error.message || '없음'}`;
+                }
+                
+                displayEmptyState(`NFT 로딩 오류: ${errorMessage}`);
+            } finally {
+                hideLoader();
+            }
+        }
+        
+        // 사용자 NFT 가져오기
+        async function fetchUserNFTs() {
+            try {
+                // 블록 범위를 제한하여 이벤트 조회 (최근 10000 블록만 조회)
+                const currentBlock = await caver.klay.getBlockNumber();
+                const fromBlock = Math.max(0, currentBlock - 10000);
+                
+                let events;
+                try {
+                    events = await contract.getPastEvents('TokenCreated', {
+                        filter: { creator: userAccount },
+                        fromBlock: fromBlock,
+                        toBlock: 'latest'
+                    });
+                } catch (eventError) {
+                    // 필터 없이 다시 시도
+                    events = await contract.getPastEvents('TokenCreated', {
+                        fromBlock: fromBlock,
+                        toBlock: 'latest'
+                    });
+                    
+                    // 가져온 이벤트에서 사용자 계정과 관련된 이벤트만 필터링
+                    events = events.filter(event => 
+                        event.returnValues && 
+                        event.returnValues.creator && 
+                        event.returnValues.creator.toLowerCase() === userAccount.toLowerCase()
+                    );
+                }
+                
+                if (!events || events.length === 0) {
+                    return [];
+                }
+                
+                // 각 토큰 ID에 대한 정보 가져오기
+                const nfts = [];
+                for (const event of events) {
+                    try {
+                        const tokenId = event.returnValues.tokenId;
+                        
+                        if (!tokenId) continue;
+                        
+                        let exists = false;
+                        try {
+                            exists = await contract.methods.exists(tokenId).call();
+                        } catch (existsError) {
+                            continue;
+                        }
+                        
+                        if (exists) {
+                            try {
+                                const tokenInfo = await contract.methods.getTokenInfo(tokenId).call();
+                                const tokenURI = await contract.methods.uri(tokenId).call();
+                                
+                                // URI 디코딩 및 파싱
+                                const metadata = parseTokenURI(tokenURI);
+                                
+                                nfts.push({
+                                    id: tokenId,
+                                    name: tokenInfo.name,
+                                    description: tokenInfo.description,
+                                    image: metadata.image,
+                                    createdAt: tokenInfo.createdAt
+                                });
+                            } catch (tokenError) {
+                                // 오류가 발생해도 다음 토큰으로 진행
+                            }
+                        }
+                    } catch (tokenError) {
+                        // 오류가 발생해도 계속 진행
+                    }
+                }
+                
+                return nfts;
+            } catch (error) {
+                // 대체 방법으로 직접 토큰 조회 시도
+                try {
+                    // balanceOf를 통해 토큰 개수 확인 후 tokenOfOwnerByIndex로 조회
+                    if (contract.methods.balanceOf) {
+                        const balance = await contract.methods.balanceOf(userAccount).call();
+                        
+                        if (balance > 0) {
+                            const nfts = [];
+                            for (let i = 0; i < Math.min(balance, 10); i++) { // 최대 10개만 조회
+                                try {
+                                    if (contract.methods.tokenOfOwnerByIndex) {
+                                        const tokenId = await contract.methods.tokenOfOwnerByIndex(userAccount, i).call();
+                                        const tokenURI = await contract.methods.uri(tokenId).call();
+                                        const metadata = parseTokenURI(tokenURI);
+                                        
+                                        nfts.push({
+                                            id: tokenId,
+                                            name: metadata.name || '이름 없음',
+                                            description: metadata.description || '',
+                                            image: metadata.image || '',
+                                            createdAt: Date.now()
+                                        });
+                                    }
+                                } catch (e) {
+                                    // 개별 토큰 조회 오류는 무시
+                                }
+                            }
+                            
+                            if (nfts.length > 0) {
+                                return nfts;
+                            }
+                        }
+                    }
+                } catch (alternativeError) {
+                    // 대체 방법도 실패
+                }
+                
+                throw error; // 원래 에러 전달
+            }
+        }
+
+        // 업로드 Modal 열기
+        function openUploadModal() {
+            if (!isConnected) {
+                showNotification('NFT를 발행하려면 먼저 지갑을 연결하세요', 'error');
+                return;
+            }
+            
+            uploadModal.style.display = 'block';
+            document.body.style.overflow = 'hidden'; // 배경 스크롤 방지
+        }
+
+        // 모달 닫기
+        function closeModal() {
+            uploadModal.style.display = 'none';
+            document.body.style.overflow = ''; // 스크롤 다시 활성화
+            nftForm.reset();
+            imagePreview.innerHTML = '';
+        }
+
+        // 이미지 미리보기
+        function previewImage(event) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    imagePreview.innerHTML = `<img src="${e.target.result}" alt="Preview">`;
+                };
+                reader.readAsDataURL(file);
+            } else {
+                imagePreview.innerHTML = '';
+            }
+        }
+
+        // 로딩 표시/숨기기 함수
+        function showLoader() {
+            loader.style.display = 'block';
+        }
+        
+        function hideLoader() {
+            loader.style.display = 'none';
+        }
+        
+        // 알림 메시지 표시 함수
+        function showNotification(message, type) {
+            notification.textContent = message;
+            notification.className = `notification ${type}`;
+            notification.classList.add('show');
+            
+            setTimeout(() => {
+                notification.classList.remove('show');
+            }, 3000);
+        }
+
+        // Kaikas 지갑 연결 함수
+        async function connectKaikas() {
+            if (walletConnecting) return false; // 이미 연결 중이면 중단
+            
+            try {
+                walletConnecting = true; // 연결 시작 표시
+                showLoader();
+                
+                if (!window.klaytn) {
+                    showNotification('Kaikas 지갑이 설치되어 있지 않습니다.', 'error');
+                    return false;
+                }
+                
+                // 지갑 연결 요청
+                const accounts = await window.klaytn.enable();
+                if (!accounts || accounts.length === 0) {
+                    throw new Error('지갑 주소를 가져올 수 없습니다.');
+                }
+                
+                userAccount = accounts[0];
+                
+                // 주소 표시
+                document.getElementById('userWalletAddress').textContent = 
+                    userAccount.substring(0, 6) + '...' + userAccount.substring(userAccount.length - 4);
+                document.getElementById('userWalletInfo').style.display = 'block';
+                
+                // 컨트랙트 주소 확인
+                if (!isValidAddress(CONTRACT_ADDRESS)) {
+                    showNotification('유효한 컨트랙트 주소가 설정되지 않았습니다.', 'error');
+                    hideLoader();
+                    walletConnecting = false;
+                    return false;
+                }
+                
+                // Caver 객체 초기화 및 컨트랙트 인스턴스 생성
+                try {
+                    caver = new Caver(window.klaytn);
+                    
+                    // ABI 유효성 검사
+                    if (!ABI || !Array.isArray(ABI) || ABI.length === 0) {
+                        throw new Error('컨트랙트 ABI가 유효하지 않습니다.');
+                    }
+                    
+                    // 컨트랙트 인스턴스 생성
+                    contract = new caver.klay.Contract(ABI, CONTRACT_ADDRESS);
+                    
+                    // 컨트랙트 객체 유효성 검사
+                    if (!contract || !contract.methods) {
+                        throw new Error('컨트랙트 인스턴스 생성에 실패했습니다.');
+                    }
+                } catch (contractError) {
+                    showNotification('컨트랙트 초기화 중 오류: ' + contractError.message, 'error');
+                    throw contractError;
+                }
+                
+                isConnected = true;
+                showNotification('지갑이 연결되었습니다', 'success');
+                connectWalletSection.style.display = 'none';
+                
+                await loadUserNFTs();
+                await loadFamilyAddresses(); // 가족 주소 목록 로드
+                return true;
+            } catch (error) {
+                showNotification('지갑 연결에 실패했습니다: ' + (error.message || '알 수 없는 오류'), 'error');
+                return false;
+            } finally {
+                hideLoader();
+                walletConnecting = false; // 연결 종료 표시
+            }
+        }
+
+        // 가족 주소 목록 가져오기
+        async function loadFamilyAddresses() {
+            const familyList = document.getElementById('familyAddressList');
+            
+            try {
+                // 가족 계약이 있는지 확인
+                if (!window.klaytn || !userAccount) {
+                    throw new Error('지갑이 연결되어 있지 않습니다');
+                }
+                
+                try {
+                    // 가족 구성원 주소 목록 가져오기
+                    if (!contract.methods.getMyFamilyMembers) {
+                        familyList.innerHTML = '<div class="no-family">가족 관리 기능을 사용할 수 없습니다.</div>';
+                        return;
+                    }
+                    
+                    const members = await contract.methods.getMyFamilyMembers().call({ from: userAccount });
+                    
+                    if (!members || members.length === 0) {
+                        familyList.innerHTML = '<div class="no-family">가족으로 등록된 주소가 없습니다.</div>';
+                        return;
+                    }
+                    
+                    // 가족 목록 HTML 생성
+                    let html = '';
+                    for (const address of members) {
+                        // 해당 주소가 내 주소면 건너뛰기 (자기 자신은 제외)
+                        if (address.toLowerCase() === userAccount.toLowerCase()) {
+                            continue;
+                        }
+                        
+                        // 닉네임 가져오기
+                        let nickname = '';
+                        try {
+                            if (contract.methods.getNickname) {
+                                nickname = await contract.methods.getNickname(address).call();
+                            } else {
+                                nickname = '가족';
+                            }
+                        } catch (e) {
+                            nickname = '가족';
+                        }
+                        
+                        html += `
+                            <div class="family-address-item">
+                                <input type="checkbox" id="family-${address}" data-address="${address}">
+                                <label for="family-${address}">
+                                    <span class="family-nickname">${nickname}</span>
+                                    <span class="family-address">${address}</span>
+                                </label>
+                            </div>
+                        `;
+                    }
+                    
+                    familyList.innerHTML = html || '<div class="no-family">가족으로 등록된 주소가 없습니다.</div>';
+                } catch (methodError) {
+                    familyList.innerHTML = '<div class="no-family">가족 주소를 불러올 수 없습니다.</div>';
+                }
+            } catch (error) {
+                familyList.innerHTML = `<div class="no-family">가족 주소를 불러올 수 없습니다: ${error.message}</div>`;
+            }
+        }
+
+        // NFT 민팅 함수
+        async function mintNFT(event) {
+            event.preventDefault();
+            
+            if (!isConnected) {
+                showNotification('먼저 지갑을 연결해주세요!', 'error');
+                return;
+            }
+            
+            const name = document.getElementById('nftName').value;
+            const description = document.getElementById('nftDescription').value;
+            
+            // 선택된 가족 주소 목록 가져오기
+            const selectedAddresses = Array.from(
+                document.querySelectorAll('#familyAddressList input[type="checkbox"]:checked')
+            ).map(checkbox => checkbox.getAttribute('data-address'));
+            
+            // 공유할 주소 목록을 문자열로 변환 (콤마로 구분)
+            const sharedAddresses = selectedAddresses.join(',');
+            
+            const imageFile = document.getElementById('nftImage').files[0];
+            
+            if (!name || !imageFile) {
+                showNotification('이름과 이미지는 필수 입력사항입니다.', 'error');
+                return;
+            }
+            
+            try {
+                showLoader();
+                
+                // 이미지를 Base64로 변환
+                const imageBase64 = await convertImageToBase64(imageFile);
+                
+                // 이미지 크기가 너무 크면 경고
+                const MAX_RECOMMENDED_SIZE = 1000000; // 약 1MB
+                if (imageBase64.length > MAX_RECOMMENDED_SIZE) {
+                    const confirmContinue = confirm(`이미지 크기가 큽니다 (${Math.round(imageBase64.length / 1024)} KB). 가스 비용이 많이 들 수 있습니다. 계속 진행하시겠습니까?`);
+                    if (!confirmContinue) {
+                        hideLoader();
+                        return;
+                    }
+                }
+                
+                // 메타데이터 생성 (공유할 주소 목록 포함)
+                const metadata = {
+                    name: name,
+                    description: description,
+                    image: imageBase64,
+                    shared_with: sharedAddresses // 공유할 주소 목록
+                };
+                
+                // 컨트랙트 객체가 없거나 컨트랙트 주소가 없는 경우 에러 처리
+                if (!contract || !contract.methods || !isValidAddress(CONTRACT_ADDRESS)) {
+                    showNotification('컨트랙트 정보가 없어 NFT를 발행할 수 없습니다.', 'error');
+                    hideLoader();
+                    return;
+                }
+                
+                // contract.methods.mint이 존재하는지 확인
+                if (!contract.methods.mint) {
+                    showNotification('컨트랙트에 mint 함수가 없습니다. ABI를 확인해주세요.', 'error');
+                    hideLoader();
+                    return;
+                }
+                
+                // 이미지 크기에 따라 가스 한도 동적 계산 및 트랜잭션 실행
+                await executeMintTransaction(name, description, imageBase64, selectedAddresses);
+                
+                closeModal();
+                await loadUserNFTs();
+            } catch (error) {
+                let errorMsg = error.message || '알 수 없는 오류';
+                if (errorMsg.length > 100) {
+                    errorMsg = errorMsg.substring(0, 100) + '...';
+                }
+                showNotification('NFT 발행 중 오류가 발생했습니다: ' + errorMsg, 'error');
+            } finally {
+                hideLoader();
+            }
+        }
+        
+        // 민팅 트랜잭션 실행
+        async function executeMintTransaction(name, description, imageBase64, selectedAddresses) {
+            try {
+                // 이미지 크기에 따라 가스 한도 동적 계산
+                const baseGas = 15000000; // 기본 가스
+                const gasPerByte = 300; // 바이트당 추가 가스
+                const imageSize = imageBase64.length;
+                const estimatedGas = baseGas + Math.floor(imageSize * gasPerByte);
+                const maxGas = Math.min(estimatedGas, 100000000);
+                
+                // 트랜잭션 실행
+                const receipt = await contract.methods.mint(name, description, imageBase64)
+                    .send({ from: userAccount, gas: maxGas });
+                
+                // 민팅 성공 후, 선택된 가족 주소들에게 NFT 공유 처리
+                if (selectedAddresses.length > 0) {
+                    try {
+                        // 각 주소마다 개별적으로 공유 처리
+                        // 실제 공유 로직이 필요 (현재는 컨트랙트에 구현되어 있지 않음)
+                        
+                        showNotification(`NFT가 성공적으로 발행되고 ${selectedAddresses.length}명의 가족과 공유되었습니다!`, 'success');
+                    } catch (shareError) {
+                        showNotification('NFT는 발행되었지만 공유 중 오류가 발생했습니다.', 'error');
+                    }
+                } else {
+                    showNotification('NFT가 성공적으로 발행되었습니다!', 'success');
+                }
+                
+                return receipt;
+            } catch (txError) {
+                throw txError;
+            }
+        }
+
+        // 이미지를 Base64로 변환하는 함수
+        function convertImageToBase64(file) {
+            return new Promise((resolve, reject) => {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    // 이미지 최적화를 위한 임시 이미지 생성
+                    const img = new Image();
+                    img.onload = function() {
+                        // 이미지 최대 크기 제한 (픽셀)
+                        const MAX_WIDTH = 800;
+                        const MAX_HEIGHT = 800;
+                        
+                        let width = img.width;
+                        let height = img.height;
+                        
+                        // 이미지 크기 조정 (필요 시)
+                        if (width > MAX_WIDTH || height > MAX_HEIGHT) {
+                            if (width > height) {
+                                if (width > MAX_WIDTH) {
+                                    height = Math.round(height * (MAX_WIDTH / width));
+                                    width = MAX_WIDTH;
+                                }
+                            } else {
+                                if (height > MAX_HEIGHT) {
+                                    width = Math.round(width * (MAX_HEIGHT / height));
+                                    height = MAX_HEIGHT;
+                                }
+                            }
+                        }
+                        
+                        // 캔버스에 이미지 그리기
+                        const canvas = document.createElement('canvas');
+                        canvas.width = width;
+                        canvas.height = height;
+                        
+                        const ctx = canvas.getContext('2d');
+                        ctx.drawImage(img, 0, 0, width, height);
+                        
+                        // 이미지 품질 조정 (0.5 = 50% 품질)
+                        const quality = 0.6;
+                        const optimizedBase64 = canvas.toDataURL('image/jpeg', quality);
+                        
+                        resolve(optimizedBase64);
+                    };
+                    img.src = e.target.result;
+                };
+                reader.onerror = function(error) {
+                    reject(error);
+                };
+                reader.readAsDataURL(file);
+            });
+        }
+
+        // 토큰 URI 파싱 함수
+        function parseTokenURI(tokenURI) {
+            try {
+                // URI가 없거나 유효하지 않은 경우 기본값 반환
+                if (!tokenURI || tokenURI.trim() === '') {
+                    return { image: '', name: 'Unknown', description: 'No metadata' };
+                }
+                
+                // data:application/json;base64, 형식에서 base64 부분 추출
+                if (tokenURI.startsWith('data:application/json;base64,')) {
+                    const base64 = tokenURI.split(',')[1];
+                    try {
+                        const jsonString = atob(base64);
+                        return JSON.parse(jsonString);
+                    } catch (decodeError) {
+                        return { image: '', name: 'Unknown', description: 'Error decoding metadata' };
+                    }
+                } 
+                // IPFS나 HTTP URI를 직접 사용하는 경우
+                else if (tokenURI.startsWith('ipfs://') || tokenURI.startsWith('http://') || tokenURI.startsWith('https://')) {
+                    // 이 경우 URI 자체를 반환하고 필요시 별도 로직으로 처리해야 함
+                    return { 
+                        image: tokenURI, 
+                        name: 'External URI', 
+                        description: 'This token uses an external URI'
+                    };
+                }
+                // JSON 문자열을 직접 사용하는 경우
+                else if (tokenURI.startsWith('{') && tokenURI.endsWith('}')) {
+                    try {
+                        return JSON.parse(tokenURI);
+                    } catch (parseError) {
+                        return { image: '', name: 'Unknown', description: 'Error parsing JSON metadata' };
+                    }
+                }
+                // 기타 알 수 없는 형식
+                else {
+                    return { image: '', name: 'Unknown', description: 'Unknown metadata format' };
+                }
+            } catch (error) {
+                return { image: '', name: 'Error', description: 'Error parsing metadata' };
+            }
+        }
+
+        // 지갑 연결 성공 시 서버에 로그인 상태 저장
+        async function saveLoginState() {
+            try {
+                const response = await fetch('/wallet-login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' }
+                });
+                
+                return response.ok;
+            } catch (error) {
+                return false;
+            }
+        }
+        
+        // 로그아웃 함수
+        async function logout() {
+            try {
+                const response = await fetch('/logout', { method: 'POST' });
+                
+                if (response.ok) {
+                    window.location.href = '/';
+                }
+            } catch (error) {
+                // 로그아웃 에러 처리
+            }
+        }
+
+        // NFT 상세 정보 모달 열기
+        function openNftDetailModal(nft) {
+            currentNft = nft;
+            
+            // 상세 정보 표시
+            document.getElementById('detailName').textContent = nft.name || '이름 없음';
+            document.getElementById('detailDescription').textContent = nft.description || '설명 없음';
+            document.getElementById('detailTokenId').textContent = nft.id;
+            
+            // 생성일 포맷팅
+            let createdDate = '알 수 없음';
+            if (nft.createdAt) {
+                try {
+                    const date = new Date(parseInt(nft.createdAt) * 1000); // 블록체인 타임스탬프는 초 단위
+                    createdDate = date.toLocaleString();
+                } catch (e) {
+                    createdDate = nft.createdAt.toString();
+                }
+            }
+            document.getElementById('detailCreatedAt').textContent = createdDate;
+            
+            // 이미지 표시
+            const detailImagePreview = document.getElementById('detailImagePreview');
+            if (nft.image) {
+                detailImagePreview.innerHTML = `<img src="${nft.image}" alt="${nft.name}" style="max-width:100%; max-height:100%;">`;
+            } else {
+                detailImagePreview.innerHTML = '<div style="text-align:center; padding: 50px 0;">이미지 없음</div>';
+            }
+            
+            // 수정 모드 폼 초기화
+            document.getElementById('updateNftName').value = nft.name || '';
+            document.getElementById('updateNftDescription').value = nft.description || '';
+            document.getElementById('updateTokenId').value = nft.id;
+            
+            // 보기 모드로 초기화
+            detailViewMode.style.display = 'block';
+            detailEditMode.style.display = 'none';
+            
+            // 모달 표시
+            nftDetailModal.style.display = 'block';
+            document.body.style.overflow = 'hidden'; // 배경 스크롤 방지
+        }
+
+        // NFT 상세 정보 모달 닫기
+        function closeNftDetailModal() {
+            nftDetailModal.style.display = 'none';
+            document.body.style.overflow = ''; // 스크롤 다시 활성화
+            currentNft = null;
+        }
+
+        // 수정 모드로 전환
+        function switchToEditMode() {
+            detailViewMode.style.display = 'none';
+            detailEditMode.style.display = 'block';
+        }
+
+        // 수정 취소
+        function cancelEditMode() {
+            detailViewMode.style.display = 'block';
+            detailEditMode.style.display = 'none';
+        }
+
+        // 업데이트 이미지 미리보기
+        function previewUpdateImage(event) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    document.getElementById('detailImagePreview').innerHTML = 
+                        `<img src="${e.target.result}" alt="Preview" style="max-width:100%; max-height:100%;">`;
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+
+        // NFT 메타데이터 업데이트
+        async function updateNFT(event) {
+            event.preventDefault();
+            
+            if (!isConnected) {
+                showNotification('먼저 지갑을 연결해주세요!', 'error');
+                return;
+            }
+            
+            const tokenId = document.getElementById('updateTokenId').value;
+            const name = document.getElementById('updateNftName').value;
+            const description = document.getElementById('updateNftDescription').value;
+            const imageFile = document.getElementById('updateNftImage').files[0];
+            
+            if (!name) {
+                showNotification('이름은 필수 입력사항입니다.', 'error');
+                return;
+            }
+            
+            try {
+                showLoader();
+                
+                let imageBase64 = currentNft.image;
+                
+                // 새 이미지가 선택되었으면 Base64로 변환
+                if (imageFile) {
+                    imageBase64 = await convertImageToBase64(imageFile);
+                    
+                    // 이미지 크기 경고
+                    const MAX_RECOMMENDED_SIZE = 1000000; // 약 1MB
+                    if (imageBase64.length > MAX_RECOMMENDED_SIZE) {
+                        const confirmContinue = confirm(`이미지 크기가 큽니다 (${Math.round(imageBase64.length / 1024)} KB). 가스 비용이 많이 들 수 있습니다. 계속 진행하시겠습니까?`);
+                        if (!confirmContinue) {
+                            hideLoader();
+                            return;
+                        }
+                    }
+                }
+                
+                // 스마트 컨트랙트에 update 함수가 있는지 확인
+                if (!contract.methods.updateToken) {
+                    showNotification('NFT 수정 기능이 컨트랙트에 구현되어 있지 않습니다.', 'error');
+                    hideLoader();
+                    return;
+                }
+                
+                // 이미지 크기에 따라 가스 한도 동적 계산
+                const baseGas = 15000000;
+                const gasPerByte = 300;
+                const imageSize = imageBase64.length;
+                const estimatedGas = baseGas + Math.floor(imageSize * gasPerByte);
+                const maxGas = Math.min(estimatedGas, 100000000);
+                
+                // 트랜잭션 실행
+                const receipt = await contract.methods.updateToken(tokenId, name, description, imageBase64)
+                    .send({ from: userAccount, gas: maxGas });
+                
+                showNotification('NFT가 성공적으로 수정되었습니다!', 'success');
+                
+                // 현재 선택된 NFT 정보 업데이트
+                currentNft.name = name;
+                currentNft.description = description;
+                currentNft.image = imageBase64;
+                
+                // 상세 보기 모드로 전환하고 정보 업데이트
+                document.getElementById('detailName').textContent = name;
+                document.getElementById('detailDescription').textContent = description;
+                detailViewMode.style.display = 'block';
+                detailEditMode.style.display = 'none';
+                
+                // NFT 목록 새로고침
+                await loadUserNFTs();
+                
+            } catch (error) {
+                let errorMsg = error.message || '알 수 없는 오류';
+                if (errorMsg.length > 100) {
+                    errorMsg = errorMsg.substring(0, 100) + '...';
+                }
+                showNotification('NFT 수정 중 오류가 발생했습니다: ' + errorMsg, 'error');
+            } finally {
+                hideLoader();
+            }
+        }
+    </script>
+</body>
+</html> 
