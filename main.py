@@ -6,6 +6,7 @@ from starlette.middleware.sessions import SessionMiddleware
 import os
 from dotenv import load_dotenv
 import json
+from fastapi.staticfiles import StaticFiles
 
 # .env 파일을 다시 읽어서 환경변수 갱신
 load_dotenv(override=True)
@@ -17,6 +18,9 @@ app = FastAPI(docs_url=None, redoc_url=None)
 
 # 세션 미들웨어 추가 (임의의 시크릿키 사용)
 app.add_middleware(SessionMiddleware, secret_key="moamoa-kids")
+
+# 정적 파일 설정
+app.mount("/static", StaticFiles(directory="static"), name="static")
 
 # Jinja2 템플릿 디렉토리를 지정합니다.
 templates = Jinja2Templates(directory="templates")
