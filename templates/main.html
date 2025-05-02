@@ -33,12 +33,13 @@
         }
         
     </script>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4?cache-bust=1"></script>
 </head>
-<body>
-    <h2>메인 페이지</h2>
+<body class="grid place-items-center">
+    <h2 class="text-3xl font-semibold tracking-tight text-balance sm:text-3xl text-center text-gray-700 mt-4">로그인</h2>
     <!-- 브라우저 정보 표시용 div (여기에 브라우저 종류와 userAgent가 표시됩니다) -->
-    <div id="browser-info" style="margin-bottom:10px; color:blue;"></div>
-    <div id="useragent-info" style="margin-bottom:20px; color:gray; font-size:0.9em;"></div>
+    <div class="text-center text-sm mt-4" id="browser-info" style="margin-bottom:10px; color:blue;"></div>
+    <div class="text-center text-sm text-gray-500 mt-4" id="useragent-info" style="margin-bottom:20px; font-size:0.9em;"></div>
     <script>
         // 브라우저 종류를 감지하여 div에 표시하는 함수
         function getBrowserInfo() {
@@ -67,12 +68,13 @@
             getBrowserInfo();
         };
     </script>
-    
-    <!-- Kaikas 로그인 버튼 -->
-    <button onclick="connectKaikas()">Kaikas로 로그인</button>
+
+    <a href="javascript:void(0)" onclick="connectKaikas()">
+        <img src="{{ url_for('static', path='kaia_wallet.png') }}" style="width:100px; cursor:pointer;">
+    </a>
     <br><br>
     
     <!-- 각 버튼은 실제 지갑 연동을 위한 예시 코드입니다. -->
-    <p>※ 실제 서비스 적용 시 각 지갑의 공식 문서를 참고하여 보안에 유의하세요.</p>
+    <p class="text-center text-sm text-gray-500 mt-4">※ 실제 서비스 적용 시 각 지갑의 공식 문서를 참고하여 보안에 유의하세요.</p>
 </body>
 </html> 
