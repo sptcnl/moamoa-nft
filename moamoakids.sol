@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.0;
+pragma solidity ^0.8.20;
 
 // OpenZeppelin 라이브러리 불러오기
 import "@openzeppelin/contracts/token/ERC1155/ERC1155.sol";
