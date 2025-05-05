@@ -12,8 +12,10 @@ from fastapi.staticfiles import StaticFiles
 load_dotenv(override=True)
 FAM_CONTRACT_ADDRESS = os.getenv("FAM_CONTRACT_ADDRESS")
 NFT_CONTRACT_ADDRESS = os.getenv("NFT_CONTRACT_ADDRESS")
+NFT_SHARE_CONTRACT_ADDRESS = os.getenv("NFT_SHARE_CONTRACT_ADDRESS")
 print("가족 컨트랙트 주소: ", FAM_CONTRACT_ADDRESS)
 print("NFT 컨트랙트 주소: ", NFT_CONTRACT_ADDRESS)
+print("NFT Share 컨트랙트 주소: ", NFT_SHARE_CONTRACT_ADDRESS)
 
 # FastAPI 앱을 생성할 때 docs와 redoc을 비활성화합니다.
 app = FastAPI(docs_url=None, redoc_url=None)
@@ -44,13 +46,24 @@ except Exception:
     nft_abi = []
     print("NFT 컨트랙트 ABI 로드 실패")
 
+# NFT Share 컨트랙트 ABI 로드
+try:
+    with open("static/nft_share_abi.json") as f:
+        nft_share_abi = json.load(f)
+    print("NFT Share 컨트랙트 ABI 로드 성공")
+except Exception:
+    nft_share_abi = []
+    print("NFT Share 컨트랙트 ABI 로드 실패")
+
 # 루트 - 로그인 여부에 따라 main.html 또는 family.html 렌더링
 @app.get("/", response_class=HTMLResponse)
 async def read_root(request: Request):
     # 세션에서 로그인 여부 확인
     if request.session.get("wallet_login"):
         # 로그인 완료 시 가족 관리 페이지 렌더링
-        return templates.TemplateResponse("family.html", {"request": request, "contract_address": FAM_CONTRACT_ADDRESS, "contract_abi": contract_abi})
+        return templates.TemplateResponse("family.html", {
+            "request": request, "contract_address": FAM_CONTRACT_ADDRESS, "contract_abi": contract_abi
+        })
     # 로그인 전이면 메인 페이지 렌더링
     return templates.TemplateResponse("main.html", {"request": request})
 
@@ -58,13 +71,38 @@ async def read_root(request: Request):
 @app.get("/family", response_class=HTMLResponse)
 async def family_page(request: Request):
     is_logged_in = bool(request.session.get("wallet_login"))
-    return templates.TemplateResponse("family.html", {"request": request, "contract_address": FAM_CONTRACT_ADDRESS, "contract_abi": contract_abi, "is_logged_in": is_logged_in})
+    return templates.TemplateResponse("family.html", {
+        "request": request, 
+        "contract_address": FAM_CONTRACT_ADDRESS, 
+        "contract_abi": contract_abi, 
+        "is_logged_in": is_logged_in
+    })
 
 # NFT 페이지 - nft.html 렌더링
 @app.get("/nft", response_class=HTMLResponse)
 async def nft_page(request: Request):
     is_logged_in = bool(request.session.get("wallet_login"))
-    return templates.TemplateResponse("nft.html", {"request": request, "contract_address": NFT_CONTRACT_ADDRESS, "contract_abi": nft_abi, "is_logged_in": is_logged_in})
+    return templates.TemplateResponse("nft.html", {
+        "request": request, 
+        "contract_address": NFT_CONTRACT_ADDRESS, 
+        "contract_abi": nft_abi, 
+        "nft_share_contract_address": NFT_SHARE_CONTRACT_ADDRESS, 
+        "nft_share_contract_abi": nft_share_abi, 
+        "is_logged_in": is_logged_in
+    })
+
+# NFT Share 페이지 - nft_share_test.html 렌더링
+@app.get("/share", response_class=HTMLResponse)
+async def nft_page(request: Request):
+    is_logged_in = bool(request.session.get("wallet_login"))
+    return templates.TemplateResponse("nft_share_test.html", {
+        "request": request, 
+        "contract_address": NFT_SHARE_CONTRACT_ADDRESS, 
+        "contract_abi": nft_share_abi, 
+        "fam_contract_address": FAM_CONTRACT_ADDRESS, 
+        "fam_contract_abi": contract_abi, 
+        "is_logged_in": is_logged_in
+    })
 
 # 지갑 로그인 성공 시 세션에 wallet_login 값을 true로 저장하는
 @app.post("/wallet-login")
