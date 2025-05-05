@@ -10,8 +10,10 @@ from fastapi.staticfiles import StaticFiles
 
 # .env 파일을 다시 읽어서 환경변수 갱신
 load_dotenv(override=True)
-CONTRACT_ADDRESS = os.getenv("CONTRACT_ADDRESS")
-print(CONTRACT_ADDRESS)
+FAM_CONTRACT_ADDRESS = os.getenv("FAM_CONTRACT_ADDRESS")
+NFT_CONTRACT_ADDRESS = os.getenv("NFT_CONTRACT_ADDRESS")
+print("가족 컨트랙트 주소: ", FAM_CONTRACT_ADDRESS)
+print("NFT 컨트랙트 주소: ", NFT_CONTRACT_ADDRESS)
 
 # FastAPI 앱을 생성할 때 docs와 redoc을 비활성화합니다.
 app = FastAPI(docs_url=None, redoc_url=None)
@@ -48,7 +50,7 @@ async def read_root(request: Request):
     # 세션에서 로그인 여부 확인
     if request.session.get("wallet_login"):
         # 로그인 완료 시 가족 관리 페이지 렌더링
-        return templates.TemplateResponse("family.html", {"request": request, "contract_address": CONTRACT_ADDRESS, "contract_abi": contract_abi})
+        return templates.TemplateResponse("family.html", {"request": request, "contract_address": FAM_CONTRACT_ADDRESS, "contract_abi": contract_abi})
     # 로그인 전이면 메인 페이지 렌더링
     return templates.TemplateResponse("main.html", {"request": request})
 
@@ -56,13 +58,13 @@ async def read_root(request: Request):
 @app.get("/family", response_class=HTMLResponse)
 async def family_page(request: Request):
     is_logged_in = bool(request.session.get("wallet_login"))
-    return templates.TemplateResponse("family.html", {"request": request, "contract_address": CONTRACT_ADDRESS, "contract_abi": contract_abi, "is_logged_in": is_logged_in})
+    return templates.TemplateResponse("family.html", {"request": request, "contract_address": FAM_CONTRACT_ADDRESS, "contract_abi": contract_abi, "is_logged_in": is_logged_in})
 
 # NFT 페이지 - nft.html 렌더링
 @app.get("/nft", response_class=HTMLResponse)
 async def nft_page(request: Request):
     is_logged_in = bool(request.session.get("wallet_login"))
-    return templates.TemplateResponse("nft.html", {"request": request, "contract_address": CONTRACT_ADDRESS, "contract_abi": nft_abi, "is_logged_in": is_logged_in})
+    return templates.TemplateResponse("nft.html", {"request": request, "contract_address": NFT_CONTRACT_ADDRESS, "contract_abi": nft_abi, "is_logged_in": is_logged_in})
 
 # 지갑 로그인 성공 시 세션에 wallet_login 값을 true로 저장하는
 @app.post("/wallet-login")
