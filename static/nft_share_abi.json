@@ -229,32 +229,6 @@
 	{
 		"inputs": [
 			{
-				"internalType": "address",
-				"name": "_familyManager",
-				"type": "address"
-			}
-		],
-		"name": "setFamilyManager",
-		"outputs": [],
-		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "address",
-				"name": "_nftContract",
-				"type": "address"
-			}
-		],
-		"name": "setNFTContract",
-		"outputs": [],
-		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
 				"internalType": "uint256",
 				"name": "tokenId",
 				"type": "uint256"

@@ -13,7 +13,7 @@ interface INFT is IERC1155 {
 
 // 가족 관리 컨트랙트 인터페이스
 interface IFamilyManager {
-    function isMyFamily(address member) external view returns (bool);
+    function isMyFamily(address owner, address member) external view returns (bool);
     function getMyFamilyMembers() external view returns (address[] memory);
 }
 
@@ -60,7 +60,7 @@ contract NFTSharing is Ownable, ReentrancyGuard {
         require(to != address(0), unicode"0주소와 공유는 불가"); // 0주소 제외
         
         // 가족 관계 확인 - familyManager의 isMyFamily 함수 사용
-        require(familyManager.isMyFamily(to), unicode"가족 구성원에게만 공유할 수 있습니다");
+        require(familyManager.isMyFamily(msg.sender, to), unicode"가족 구성원에게만 공유할 수 있습니다");
         
         _tokenAuthorized[tokenId][to] = true;
         _addToSharedWithAddress(to, tokenId);

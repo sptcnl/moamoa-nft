@@ -81,7 +81,7 @@
         console.log('viewer:', viewer);
         if (!contract || !userAccount) return setResult('지갑 연결을 먼저 해주세요.');
         try {
-            const isFamily = await familyManagerContract.methods.isMyFamily(viewer).call({ from: userAccount });
+            const isFamily = await familyManagerContract.methods.isMyFamily(userAccount, viewer).call();
             console.log("가족 여부:", isFamily); // true여야 함
             receipt = await contract.methods.shareNFT(tokenId.toString(), viewer).send({
                 from: userAccount,
