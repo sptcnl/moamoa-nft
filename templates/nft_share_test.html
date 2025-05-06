@@ -31,14 +31,14 @@
 <div class="result" id="result"></div>
 
 <script>
-    // 실제 배포된 컨트랙트 ABI와 주소로 교체하세요
+    // NFT Share
     const CONTRACT_ABI = JSON.parse(`{{ contract_abi | tojson | safe }}`);
     const CONTRACT_ADDRESS = "{{ contract_address }}";
 
-    const FAMILY_MANAGER_ABI = JSON.parse(`{{ fam_contract_abi | tojson | safe }}`); // 가족 관리 컨트랙트 ABI
-    const FAMILY_MANAGER_ADDRESS = "{{ fam_contract_address }}"; // 가족 관리 컨트랙트 주소
+    // Family Manager
+    const FAMILY_MANAGER_ABI = JSON.parse(`{{ fam_contract_abi | tojson | safe }}`);
+    const FAMILY_MANAGER_ADDRESS = "{{ fam_contract_address }}";
 
-    
     let caver;
     let contract;
     let userAccount;
@@ -72,23 +72,26 @@
     async function shareNFT() {
         const tokenId = document.getElementById('tokenId').value;
         const viewer = document.getElementById('viewer').value;
-        const isFamily = await familyManagerContract.methods.isMyFamily(viewer).call();
+        let receipt;
         if (tokenId === '' || !viewer) {
             return setResult('토큰ID와 주소를 모두 입력해주세요');
         }
-        console.log("가족 여부:", isFamily); // true여야 함
         console.log('userAccount:', userAccount);
         console.log('tokenId:', tokenId);
         console.log('viewer:', viewer);
         if (!contract || !userAccount) return setResult('지갑 연결을 먼저 해주세요.');
         try {
-            await contract.methods.shareNFT(Number(tokenId), viewer).send({
+            const isFamily = await familyManagerContract.methods.isMyFamily(viewer).call({ from: userAccount });
+            console.log("가족 여부:", isFamily); // true여야 함
+            receipt = await contract.methods.shareNFT(tokenId.toString(), viewer).send({
                 from: userAccount,
                 gas: 2000000
             });
             setResult('NFT 공유 성공!');
+            console.log('트랜잭션 성공:', receipt.transactionHash);
         } catch (e) {
             setResult('공유 실패: ' + (e.message || e));
+            console.error('트랜잭션 실패:', e.message);
         }
     }
 
