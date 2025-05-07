@@ -497,9 +497,14 @@
     <script src="https://cdn.jsdelivr.net/npm/caver-js@1.8.0/dist/caver.min.js"></script>
     
     <script>
-        // 컨트랙트 정보 - 직접 선언
-        const CONTRACT_ADDRESS = "0xF9CE32956caE3154E9f2b8bD7b27ffA58A19785a"; // 스마트 컨트랙트 주소 (직접 선언)
+        // 컨트랙트 정보
+        const FAM_CONTRACT_ADDRESS = "{{ fam_contract_address }}";
+        const FAM_CONTRACT_ABI = JSON.parse(`{{ fam_contract_abi | tojson | safe }}`);
+        const NFT_SHARE_CONTRACT_ADDRESS = "{{ nft_share_contract_address }}";
+        const NFT_SHARE_CONTRACT_ABI = JSON.parse(`{{ nft_share_contract_abi | tojson | safe }}`);
+        const CONTRACT_ADDRESS = "{{ contract_address }}"; // 스마트 컨트랙트 주소
         const ABI = JSON.parse(`{{ contract_abi | tojson | safe }}`); // 스마트 컨트랙트 ABI (함수 정보, 서버에서 받아옴)
+        let nft_share_contract;
         let contract; // 컨트랙트 인스턴스
         let walletConnecting = false; // 지갑 연결 중복 방지용 변수
         
@@ -581,8 +586,10 @@
                     // 컨트랙트 초기화
                     try {
                         contract = new caver.klay.Contract(ABI, CONTRACT_ADDRESS);
+                        nft_share_contract = new caver.klay.Contract(NFT_SHARE_CONTRACT_ABI, NFT_SHARE_CONTRACT_ADDRESS);
+                        fam_contract = new caver.klay.Contract(FAM_CONTRACT_ABI, FAM_CONTRACT_ADDRESS);
                         
-                        if (!contract || !contract.methods) {
+                        if (!contract || !contract.methods || !nft_share_contract || ! nft_share_contract.method) {
                             throw new Error('컨트랙트 초기화 실패');
                         }
                     } catch (contractError) {
@@ -662,36 +669,84 @@
         }
 
         // NFT 표시 함수
-        function displayNFTs(nfts) {
+        function displayNFTs(nfts, sharedNfts = []) {
             nftGrid.innerHTML = ''; // 기존 내용 초기화
             
-            if (!nfts || nfts.length === 0) {
-                displayEmptyState('발행한 NFT가 없습니다');
-                return;
-            }
+            // 소유 NFT 섹션 제목 추가
+            const ownedHeader = document.createElement('h2');
+            ownedHeader.className = 'nft-section-title';
+            ownedHeader.textContent = '내 NFT';
+            nftGrid.appendChild(ownedHeader);
             
-            nfts.forEach(nft => {
-                const nftElement = document.createElement('div');
-                nftElement.className = 'nft-item';
-                nftElement.setAttribute('data-nft-id', nft.id);
+            // 소유한 NFT 표시
+            if (!nfts || nfts.length === 0) {
+                const emptyOwned = document.createElement('div');
+                emptyOwned.className = 'empty-state';
+                emptyOwned.textContent = '발행한 NFT가 없습니다';
+                nftGrid.appendChild(emptyOwned);
+            } else {
+                const ownedGrid = document.createElement('div');
+                ownedGrid.className = 'nft-grid owned-grid';
                 
-                // 이미지 데이터가 있으면 표시, 없으면 빈 공간
-                const imageHtml = nft.image ? 
-                    `<img src="${nft.image}" alt="${nft.name}" style="width:100%; height:100%; object-fit:contain;">` : 
-                    '';
-                
-                nftElement.innerHTML = `
-                    <div class="nft-image">${imageHtml}</div>
-                    <div class="nft-name">${nft.name || '이름 없음'}</div>
-                `;
-                
-                // NFT 클릭 이벤트 추가
-                nftElement.addEventListener('click', () => {
-                    openNftDetailModal(nft);
+                nfts.forEach(nft => {
+                    const nftElement = createNftElement(nft, true);
+                    ownedGrid.appendChild(nftElement);
                 });
                 
-                nftGrid.appendChild(nftElement);
+                nftGrid.appendChild(ownedGrid);
+            }
+            
+            // 공유받은 NFT 섹션 제목 추가
+            const sharedHeader = document.createElement('h2');
+            sharedHeader.className = 'nft-section-title';
+            sharedHeader.textContent = '공유받은 NFT';
+            sharedHeader.style.marginTop = '30px';
+            nftGrid.appendChild(sharedHeader);
+            
+            // 공유받은 NFT 표시
+            if (!sharedNfts || sharedNfts.length === 0) {
+                const emptyShared = document.createElement('div');
+                emptyShared.className = 'empty-state';
+                emptyShared.textContent = '공유받은 NFT가 없습니다';
+                nftGrid.appendChild(emptyShared);
+            } else {
+                const sharedGrid = document.createElement('div');
+                sharedGrid.className = 'nft-grid shared-grid';
+                
+                sharedNfts.forEach(nft => {
+                    const nftElement = createNftElement(nft, false);
+                    sharedGrid.appendChild(nftElement);
+                });
+                
+                nftGrid.appendChild(sharedGrid);
+            }
+        }
+
+        // DOM 요소 만들어주는 함수
+        function createNftElement(nft, isOwned) {
+            const nftElement = document.createElement('div');
+            nftElement.className = 'nft-item';
+            nftElement.setAttribute('data-nft-id', nft.id);
+
+            // 이미지 데이터가 있으면 표시, 없으면 빈 공간
+            const imageHtml = nft.image ? 
+                `<img src="${nft.image}" alt="${nft.name}" style="width:100%; height:100%; object-fit:contain;">` : 
+                '';
+
+            nftElement.innerHTML = `
+                <div class="nft-image">${imageHtml}</div>
+                <div class="nft-details">
+                    <div class="nft-name">${nft.name || '이름 없음'}</div>
+                    <div class="nft-badge ${isOwned ? 'owned' : 'shared'}">${isOwned ? '소유' : '공유받음'}</div>
+                </div>
+            `;
+
+            // NFT 클릭 이벤트 추가
+            nftElement.addEventListener('click', () => {
+                openNftDetailModal(nft, isOwned);
             });
+
+            return nftElement;
         }
 
         // 빈 상태 표시 함수
@@ -703,7 +758,7 @@
             `;
         }
 
-        // 사용자의 NFT 목록 불러오기
+        // 사용자의 NFT 목록 불러오기 (소유 + 공유받은 NFT)
         async function loadUserNFTs() {
             if (!isConnected) {
                 displayEmptyState('지갑이 연결되어 있지 않습니다');
@@ -715,20 +770,23 @@
                 displayEmptyState('NFT를 불러오는 중...');
                 
                 // 컨트랙트 주소 확인
-                if (!isValidAddress(CONTRACT_ADDRESS)) {
+                if (!isValidAddress(CONTRACT_ADDRESS) || !isValidAddress(NFT_SHARE_CONTRACT_ADDRESS)) {
                     displayEmptyState('컨트랙트 주소 오류');
                     hideLoader();
                     return;
                 }
                 
-                // 이벤트 조회 로직
-                const nfts = await fetchUserNFTs();
+                // 1. 소유한 NFT 가져오기
+                const ownedNfts = await fetchUserNFTs();
                 
-                // NFT 목록 표시
-                if (nfts && nfts.length > 0) {
-                    displayNFTs(nfts);
+                // 2. 공유받은 NFT 가져오기
+                const sharedNfts = await fetchSharedNFTs();
+                
+                // NFT 목록 표시 (소유 + 공유 함께)
+                if ((ownedNfts && ownedNfts.length > 0) || (sharedNfts && sharedNfts.length > 0)) {
+                    displayNFTs(ownedNfts, sharedNfts);
                 } else {
-                    displayEmptyState('발행한 NFT가 없습니다');
+                    displayEmptyState('소유하거나 공유받은 NFT가 없습니다');
                 }
             } catch (error) {
                 // 오류 메시지를 더 구체적으로 표시
@@ -745,7 +803,63 @@
                 hideLoader();
             }
         }
-        
+
+        // 공유받은 NFT 목록 가져오기
+        async function fetchSharedNFTs() {
+            try {
+                // 공유받은 토큰 ID 목록 가져오기
+                const sharedTokenIds = await nft_share_contract.methods.getAuthorized().call({
+                    from: userAccount
+                });
+                
+                if (!sharedTokenIds || sharedTokenIds.length === 0) {
+                    return [];
+                }
+                
+                // 각 공유 토큰에 대한 정보 가져오기
+                const sharedNfts = [];
+                for (const tokenId of sharedTokenIds) {
+                    try {
+                        // 토큰 존재 확인
+                        let exists = false;
+                        try {
+                            exists = Boolean(sharedTokenIds);
+                            console.log("공유 받은 토큰: ", exists)
+                        } catch (existsError) {
+                            continue;
+                        }
+                        
+                        if (exists) {
+                            // 토큰 정보 가져오기
+                            const tokenInfo = await contract.methods.getTokenInfo(tokenId).call();
+                            const tokenURI = await contract.methods.uri(tokenId).call();
+                            
+                            // URI 디코딩 및 파싱
+                            const metadata = parseTokenURI(tokenURI);
+                            
+                            sharedNfts.push({
+                                id: tokenId,
+                                name: tokenInfo.name,
+                                description: tokenInfo.description,
+                                image: metadata.image,
+                                createdAt: tokenInfo.createdAt,
+                                isOwned: false, // 공유받은 NFT 표시
+                                isShared: true
+                            });
+                        }
+                    } catch (tokenError) {
+                        // 개별 토큰 오류는 무시하고 계속 진행
+                        console.error(`토큰 ${tokenId} 정보 가져오기 실패:`, tokenError);
+                    }
+                }
+                
+                return sharedNfts;
+            } catch (error) {
+                console.error("공유 NFT 가져오기 오류:", error);
+                return []; // 오류 발생 시 빈 배열 반환
+            }
+        }
+
         // 사용자 NFT 가져오기
         async function fetchUserNFTs() {
             try {
@@ -997,12 +1111,12 @@
                 
                 try {
                     // 가족 구성원 주소 목록 가져오기
-                    if (!contract.methods.getMyFamilyMembers) {
+                    if (!fam_contract.methods.getMyFamilyMembers) {
                         familyList.innerHTML = '<div class="no-family">가족 관리 기능을 사용할 수 없습니다.</div>';
                         return;
                     }
                     
-                    const members = await contract.methods.getMyFamilyMembers().call({ from: userAccount });
+                    const members = await fam_contract.methods.getMyFamilyMembers().call({ from: userAccount });
                     
                     if (!members || members.length === 0) {
                         familyList.innerHTML = '<div class="no-family">가족으로 등록된 주소가 없습니다.</div>';
@@ -1020,8 +1134,8 @@
                         // 닉네임 가져오기
                         let nickname = '';
                         try {
-                            if (contract.methods.getNickname) {
-                                nickname = await contract.methods.getNickname(address).call();
+                            if (fam_contract.methods.getNickname) {
+                                nickname = await fam_contract.methods.getNickname(address).call();
                             } else {
                                 nickname = '가족';
                             }
@@ -1144,14 +1258,26 @@
                 const receipt = await contract.methods.mint(name, description, imageBase64)
                     .send({ from: userAccount, gas: maxGas });
                 
+                const createdTokenID = receipt.events.TokenCreated.returnValues[0]
+                
                 // 민팅 성공 후, 선택된 가족 주소들에게 NFT 공유 처리
                 if (selectedAddresses.length > 0) {
                     try {
+                        console.log("선택 패밀리 리스트: ", selectedAddresses)
                         // 각 주소마다 개별적으로 공유 처리
-                        // 실제 공유 로직이 필요 (현재는 컨트랙트에 구현되어 있지 않음)
+                        await Promise.all(selectedAddresses.map(address => 
+                            nft_share_contract.methods.shareNFT(createdTokenID.toString(), address).send({
+                                from: userAccount,
+                                gas: 2000000
+                            }).then(req_share => {
+                                console.log('트랜잭션 성공:', req_share);
+                            })
+                        ));
+                        console.log('nft 공유 끝!')
                         
-                        showNotification(`NFT가 성공적으로 발행되고 ${selectedAddresses.length}명의 가족과 공유되었습니다!`, 'success');
+                        await showNotification(`NFT가 성공적으로 발행되고 ${selectedAddresses.length}명의 가족과 공유되었습니다!`, 'success');
                     } catch (shareError) {
+                        console.log('공유 오류:', shareError);
                         showNotification('NFT는 발행되었지만 공유 중 오류가 발생했습니다.', 'error');
                     }
                 } else {

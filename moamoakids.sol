@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.0;
+pragma solidity ^0.8.20;
 
 // OpenZeppelin 라이브러리 불러오기
 import "@openzeppelin/contracts/token/ERC1155/ERC1155.sol";
@@ -86,8 +86,8 @@ contract MoamoaKids is ERC1155, Ownable {
     }
 
     // 가족 여부 확인
-    function isMyFamily(address member) external view returns (bool) {
-        return familyRelations[msg.sender][member];
+    function isMyFamily(address owner, address member) external view returns (bool) {
+        return familyRelations[owner][member];
     }
 
     // 내부 함수: 리스트에서 주소 제거
