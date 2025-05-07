@@ -1529,7 +1529,7 @@
                 }
                 
                 // 스마트 컨트랙트에 update 함수가 있는지 확인
-                if (!contract.methods.updateToken) {
+                if (!contract.methods.updateMetadata) {
                     showNotification('NFT 수정 기능이 컨트랙트에 구현되어 있지 않습니다.', 'error');
                     hideLoader();
                     return;
@@ -1543,7 +1543,7 @@
                 const maxGas = Math.min(estimatedGas, 100000000);
                 
                 // 트랜잭션 실행
-                const receipt = await contract.methods.updateToken(tokenId, name, description, imageBase64)
+                const receipt = await contract.methods.updateMetadata(tokenId, name, description, imageBase64)
                     .send({ from: userAccount, gas: maxGas });
                 
                 showNotification('NFT가 성공적으로 수정되었습니다!', 'success');
