@@ -39,10 +39,12 @@
     <div id="qr-reader" style="display:none;"></div>
     <!-- 내 지갑 주소 및 오너 여부 표시 -->
     <div>
-        <b>내 지갑 주소:</b> <span id="my-address">-</span>
-        <span id="owner-badge"></span>
+        <b id="qr-text" style="display: none;">인식된 </b><b>지갑 주소:</b> <span id="my-address">-</span>
+        <span style="display: none;" id="owner-badge"></span>
         <!-- QR로 인식된 내 지갑 주소 등록 버튼 (동적으로 표시, 오너만 보임) -->
-        <button id="register-my-address-btn" style="display:none; margin-left:10px;" onclick="registerMyAddress()">내 지갑 주소 등록</button>
+        <button class="inline-flex items-center rounded-md bg-black-700 px-3 py-1 text-xs font-medium text-white-700 ring-1 ring-black-900/10 ring-inset" id="register-my-address-btn" style="display:none; margin-left:5px;" onclick="registerMyAddress()">
+            등록
+        </button>
     </div>
     <br>
     <!-- 가족 구성원 목록 -->
@@ -104,6 +106,7 @@
                 const owner = await contract.methods.owner().call();
                 isOwner = (myAddress.toLowerCase() === owner.toLowerCase()); // 오너 여부 확인
                 if (isOwner) {
+                    document.getElementById('owner-badge').style.display = '';
                     document.getElementById('owner-badge').innerText = ' (오너)';
                 }
 
@@ -264,7 +267,9 @@
                     { fps: 10, qrbox: 250 }, // 초당 프레임, QR박스 크기
                     (decodedText, decodedResult) => {
                         // QR코드 인식 성공 시
+                        document.getElementById('owner-badge').style.display = 'none';
                         document.getElementById('my-address').innerText = decodedText; // 내 주소로 설정
+                        document.getElementById('qr-text').style.display = ''; // qr 주소 분별용 텍스트 표시
                         document.getElementById('register-my-address-btn').style.display = ''; // 등록 버튼 표시
                         qrReader.stop().then(() => {
                             document.getElementById('qr-reader').style.display = 'none'; // 리더 숨김
