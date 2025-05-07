@@ -88,6 +88,8 @@ async def nft_page(request: Request):
         "contract_abi": nft_abi, 
         "nft_share_contract_address": NFT_SHARE_CONTRACT_ADDRESS, 
         "nft_share_contract_abi": nft_share_abi, 
+        "fam_contract_address": FAM_CONTRACT_ADDRESS,
+        "fam_contract_abi": contract_abi,
         "is_logged_in": is_logged_in
     })
 

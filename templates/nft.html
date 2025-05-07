@@ -498,7 +498,9 @@
     
     <script>
         // 컨트랙트 정보
-        const NFT_SHARE_CONTRACT_ADDRESS = "{{ nft_share_contract_address }}"
+        const FAM_CONTRACT_ADDRESS = "{{ fam_contract_address }}";
+        const FAM_CONTRACT_ABI = JSON.parse(`{{ fam_contract_abi | tojson | safe }}`);
+        const NFT_SHARE_CONTRACT_ADDRESS = "{{ nft_share_contract_address }}";
         const NFT_SHARE_CONTRACT_ABI = JSON.parse(`{{ nft_share_contract_abi | tojson | safe }}`);
         const CONTRACT_ADDRESS = "{{ contract_address }}"; // 스마트 컨트랙트 주소
         const ABI = JSON.parse(`{{ contract_abi | tojson | safe }}`); // 스마트 컨트랙트 ABI (함수 정보, 서버에서 받아옴)
@@ -585,6 +587,7 @@
                     try {
                         contract = new caver.klay.Contract(ABI, CONTRACT_ADDRESS);
                         nft_share_contract = new caver.klay.Contract(NFT_SHARE_CONTRACT_ABI, NFT_SHARE_CONTRACT_ADDRESS);
+                        fam_contract = new caver.klay.Contract(FAM_CONTRACT_ABI, FAM_CONTRACT_ADDRESS);
                         
                         if (!contract || !contract.methods || !nft_share_contract || ! nft_share_contract.method) {
                             throw new Error('컨트랙트 초기화 실패');
@@ -1108,12 +1111,12 @@
                 
                 try {
                     // 가족 구성원 주소 목록 가져오기
-                    if (!contract.methods.getMyFamilyMembers) {
+                    if (!fam_contract.methods.getMyFamilyMembers) {
                         familyList.innerHTML = '<div class="no-family">가족 관리 기능을 사용할 수 없습니다.</div>';
                         return;
                     }
                     
-                    const members = await contract.methods.getMyFamilyMembers().call({ from: userAccount });
+                    const members = await fam_contract.methods.getMyFamilyMembers().call({ from: userAccount });
                     
                     if (!members || members.length === 0) {
                         familyList.innerHTML = '<div class="no-family">가족으로 등록된 주소가 없습니다.</div>';
@@ -1131,8 +1134,8 @@
                         // 닉네임 가져오기
                         let nickname = '';
                         try {
-                            if (contract.methods.getNickname) {
-                                nickname = await contract.methods.getNickname(address).call();
+                            if (fam_contract.methods.getNickname) {
+                                nickname = await fam_contract.methods.getNickname(address).call();
                             } else {
                                 nickname = '가족';
                             }
@@ -1255,14 +1258,24 @@
                 const receipt = await contract.methods.mint(name, description, imageBase64)
                     .send({ from: userAccount, gas: maxGas });
                 
+                const createdTokenID = receipt.events.TokenCreated.returnValues[0]
+                
                 // 민팅 성공 후, 선택된 가족 주소들에게 NFT 공유 처리
                 if (selectedAddresses.length > 0) {
                     try {
+                        console.log("선택 패밀리 리스트: ", selectedAddresses)
                         // 각 주소마다 개별적으로 공유 처리
-                        // 실제 공유 로직이 필요 (현재는 컨트랙트에 구현되어 있지 않음)
+                        for (let i = 0; i < selectedAddresses.length; i++){
+                            const req_share = await nft_share_contract.methods.shareNFT(createdTokenID.toString(), selectedAddresses[i]).send({
+                            from: userAccount,
+                            gas: 2000000
+                            });
+                            console.log('트랜잭션 성공:', req_share);
+                        }
                         
                         showNotification(`NFT가 성공적으로 발행되고 ${selectedAddresses.length}명의 가족과 공유되었습니다!`, 'success');
                     } catch (shareError) {
+                        console.error('공유 오류:', shareError);
                         showNotification('NFT는 발행되었지만 공유 중 오류가 발생했습니다.', 'error');
                     }
                 } else {
