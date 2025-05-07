@@ -1265,17 +1265,19 @@
                     try {
                         console.log("선택 패밀리 리스트: ", selectedAddresses)
                         // 각 주소마다 개별적으로 공유 처리
-                        for (let i = 0; i < selectedAddresses.length; i++){
-                            const req_share = await nft_share_contract.methods.shareNFT(createdTokenID.toString(), selectedAddresses[i]).send({
-                            from: userAccount,
-                            gas: 2000000
-                            });
-                            console.log('트랜잭션 성공:', req_share);
-                        }
+                        await Promise.all(selectedAddresses.map(address => 
+                            nft_share_contract.methods.shareNFT(createdTokenID.toString(), address).send({
+                                from: userAccount,
+                                gas: 2000000
+                            }).then(req_share => {
+                                console.log('트랜잭션 성공:', req_share);
+                            })
+                        ));
+                        console.log('nft 공유 끝!')
                         
-                        showNotification(`NFT가 성공적으로 발행되고 ${selectedAddresses.length}명의 가족과 공유되었습니다!`, 'success');
+                        await showNotification(`NFT가 성공적으로 발행되고 ${selectedAddresses.length}명의 가족과 공유되었습니다!`, 'success');
                     } catch (shareError) {
-                        console.error('공유 오류:', shareError);
+                        console.log('공유 오류:', shareError);
                         showNotification('NFT는 발행되었지만 공유 중 오류가 발생했습니다.', 'error');
                     }
                 } else {
