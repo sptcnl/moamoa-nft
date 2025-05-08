@@ -58,6 +58,7 @@ contract NFTSharing is Ownable, ReentrancyGuard {
         require(nftContract.balanceOf(msg.sender, tokenId) > 0, unicode"이 토큰의 소유자 아님"); // 소유자 확인
         require(to != msg.sender, unicode"자기 자신과 공유는 불가"); // 자기 자신 제외
         require(to != address(0), unicode"0주소와 공유는 불가"); // 0주소 제외
+        require(!_tokenAuthorized[tokenId][to], unicode"이미 해당 주소와 공유되어 있음");
         
         // 가족 관계 확인 - familyManager의 isMyFamily 함수 사용
         require(familyManager.isMyFamily(msg.sender, to), unicode"가족 구성원에게만 공유할 수 있습니다");
@@ -77,6 +78,7 @@ contract NFTSharing is Ownable, ReentrancyGuard {
     function revokeNFTSharing(uint256 tokenId, address from) external nonReentrant {
         require(nftContract.exists(tokenId), unicode"토큰이 존재하지 않음");
         require(nftContract.balanceOf(msg.sender, tokenId) > 0, unicode"이 토큰의 소유자 아님");
+        require(_tokenAuthorized[tokenId][from], unicode"해당 주소와 공유되어 있지 않음");
         
         _tokenAuthorized[tokenId][from] = false;
         _removeFromSharedWithAddress(from, tokenId);
