@@ -1,15 +1,32 @@
 # moamoa-nft
+![FastAPI](https://img.shields.io/badge/FastAPI-005571?style=for-the-badge&logo=fastapi)
+![Solidity](https://img.shields.io/badge/Solidity-363636?style=for-the-badge&logo=solidity&logoColor=white)
+![Docker](https://img.shields.io/badge/Docker-2496ED?style=for-the-badge&logo=docker&logoColor=white)
+![HTML5](https://img.shields.io/badge/HTML5-E34F26?style=for-the-badge&logo=html5&logoColor=white)
+![CSS3](https://img.shields.io/badge/CSS3-1572B6?style=for-the-badge&logo=css3&logoColor=white)
+![JavaScript](https://img.shields.io/badge/JavaScript-F7DF1E?style=for-the-badge&logo=javascript&logoColor=black)
+![Web3.js](https://img.shields.io/badge/Web3.js-F16822?style=for-the-badge&logo=web3dotjs&logoColor=white)
 ## Index
-### Main features
+### 📚 Documentation
+[바로가기](#-documentation-1)
+
+### 🚀 Main features
 [1. 가족 등록 및 관리](#가족-등록-및-관리-기능)<br>
 [2. NFT 발행](#nft-발행minting-기능)<br>
 [3. NFT 가족 공유](#nft-가족-공유-기능)<br>
 
-### How to use
+### 📖 How to use
 [.env](#what-should-go-into-a-env-file)<br>
 [Docker](#how-to-use-docker)<br>
 
-## Main features
+## 📚 Documentation
+[- 프로젝트 기획서(Project Proposal)](https://docs.google.com/presentation/d/1kXvVTMV3bC-R-AWqeT-9hqVXo-i9OPGoCKYGSpg6-tM/edit?usp=sharing)
+<br>
+[- 스마트컨트랙트/API 명세(Smart Contract/API Documentation)](https://docs.google.com/spreadsheets/d/1WJAXfjwbgeukhXajfZN8U8gSJl9Gf4oWtk6IHE3UQIY/edit?usp=sharing)
+<br>
+[- Wireframe](https://www.figma.com/design/JI5P7vnQzygpVmK1kzeLXg/moamoa-nft-wireframe?t=dgBPIq5TsJei3JkI-1)
+
+## 🚀 Main features
 [-> 프로젝트 실행 영상](https://www.youtube.com/watch?v=_Gd4pED8VK8)
 
 ### 가족 등록 및 관리 기능
@@ -27,7 +44,7 @@ Users can mint a new NFT (ERC-1155 token) with a custom name, description, and i
 <br><br>
 Using the `shareNFT` function, an NFT owner can share their NFT with a specific family member. This feature integrates with the family management contract to ensure that only users with a family relationship can be granted viewing rights to the NFT. Shared NFTs can have their sharing revoked at any time, and the contract supports querying sharing history and checking access permissions
 
-## How to use
+## 📖 How to use
 
 ### What should go into a .env file?
 Your .env file should contain environment variables such as contract addresses required for your application.
