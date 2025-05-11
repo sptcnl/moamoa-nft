@@ -10,7 +10,7 @@
 [Docker](#how-to-use-docker)<br>
 
 ## Main features
-<iframe width="935" height="526" src="https://www.youtube.com/embed/_Gd4pED8VK8" title="moamoa-nft" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+[-> 프로젝트 실행 영상](https://www.youtube.com/watch?v=_Gd4pED8VK8)
 
 ### 가족 등록 및 관리 기능
 `addFamilyMember` 함수를 통해 사용자는 다른 지갑 주소를 가족으로 등록할 수 있습니다. 등록 시 양방향 가족 관계가 형성되고, 각자 원하는 닉네임을 설정할 수 있습니다. 가족 해제, 닉네임 변경, 가족 목록 조회 등도 지원되어, 블록체인 상에서 가족 관계를 안전하게 관리할 수 있습니다
