@@ -20,6 +20,8 @@
 - [.env 파일 구성](#what-should-go-into-a-env-file)
 - [Docker 사용법](#how-to-use-docker)
 
+### 🤝 [Team](#-team)
+
 <br>
 
 ## 📚 Documentation
@@ -72,3 +74,16 @@ docker run -it --name (container_name) (image_name)
 Replace `(image_name)` and `(container_name)` with your desired names.
 <br><br>
 Make sure your .env file is in the project root directory before building the Docker image if your application depends on environment variables.
+
+<br><br>
+<a name="team"></a>
+
+# Team
+| **Name**         | **GitHub Handle**                          | **Responsibilities**                                                                                           |
+|------------------|------------------------------------------------|-------------------------------------------------------------------------------------------|
+| **Kyunghoon Kim**  | [@Lachrym1352](https://github.com/Lachrym1352)   |   |
+| **Nahee Kim**  | [@sptcnl](https://github.com/sptcnl)   |   |
+| **Jaemin Song** | [@JmeSong](https://github.com/JmeSong)   |   |
+| **Younghun Lee** | [@leeyounghuncom](https://github.com/leeyounghuncom)   |   |
+
+<br><br><br>
