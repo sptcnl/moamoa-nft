@@ -20,7 +20,7 @@
 - [.env 파일 구성](#what-should-go-into-a-env-file)
 - [Docker 사용법](#how-to-use-docker)
 
-### 🤝 [Team](#-team)
+### 🤝 [Team](#team)
 
 <br>
 
@@ -78,7 +78,7 @@ Make sure your .env file is in the project root directory before building the Do
 <br><br>
 <a name="team"></a>
 
-# Team
+## Team
 | **Name**         | **GitHub Handle**                          | **Responsibilities**                                                                                           |
 |------------------|------------------------------------------------|-------------------------------------------------------------------------------------------|
 | **Kyunghoon Kim**  | [@Lachrym1352](https://github.com/Lachrym1352)   |   |
