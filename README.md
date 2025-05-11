@@ -6,18 +6,21 @@
 ![CSS3](https://img.shields.io/badge/CSS3-1572B6?style=for-the-badge&logo=css3&logoColor=white)
 ![JavaScript](https://img.shields.io/badge/JavaScript-F7DF1E?style=for-the-badge&logo=javascript&logoColor=black)
 ![Web3.js](https://img.shields.io/badge/Web3.js-F16822?style=for-the-badge&logo=web3dotjs&logoColor=white)
-## Index
-### 📚 Documentation
-[바로가기](#-documentation-1)
 
-### 🚀 Main features
-[1. 가족 등록 및 관리](#가족-등록-및-관리-기능)<br>
-[2. NFT 발행](#nft-발행minting-기능)<br>
-[3. NFT 가족 공유](#nft-가족-공유-기능)<br>
+## 📑 Index
 
-### 📖 How to use
-[.env](#what-should-go-into-a-env-file)<br>
-[Docker](#how-to-use-docker)<br>
+### 📚 [Documentation](#-documentation)
+
+### 🚀 [Main Features](#-main-features-1)
+- [1. 가족 등록 및 관리 기능](#가족-등록-및-관리-기능)
+- [2. NFT 발행(Minting) 기능](#nft-발행minting-기능)
+- [3. NFT 가족 공유 기능](#nft-가족-공유-기능)
+
+### 📖 [How to Use](#-how-to-use-1)
+- [.env 파일 구성](#what-should-go-into-a-env-file)
+- [Docker 사용법](#how-to-use-docker)
+
+<br>
 
 ## 📚 Documentation
 [- 프로젝트 기획서(Project Proposal)](https://docs.google.com/presentation/d/1kXvVTMV3bC-R-AWqeT-9hqVXo-i9OPGoCKYGSpg6-tM/edit?usp=sharing)
@@ -26,7 +29,7 @@
 <br>
 [- Wireframe](https://www.figma.com/design/JI5P7vnQzygpVmK1kzeLXg/moamoa-nft-wireframe?t=dgBPIq5TsJei3JkI-1)
 
-## 🚀 Main features
+## 🚀 Main Features
 [-> 프로젝트 실행 영상](https://www.youtube.com/watch?v=_Gd4pED8VK8)
 
 ### 가족 등록 및 관리 기능
