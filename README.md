@@ -22,7 +22,7 @@
 
 ### 🤝 [Team](#team)
 
-<br>
+<br><br>
 
 ## 📚 Documentation
 [- 프로젝트 기획서(Project Proposal)](https://docs.google.com/presentation/d/1kXvVTMV3bC-R-AWqeT-9hqVXo-i9OPGoCKYGSpg6-tM/edit?usp=sharing)
@@ -30,6 +30,8 @@
 [- 스마트컨트랙트/API 명세(Smart Contract/API Documentation)](https://docs.google.com/spreadsheets/d/1WJAXfjwbgeukhXajfZN8U8gSJl9Gf4oWtk6IHE3UQIY/edit?usp=sharing)
 <br>
 [- Wireframe](https://www.figma.com/design/JI5P7vnQzygpVmK1kzeLXg/moamoa-nft-wireframe?t=dgBPIq5TsJei3JkI-1)
+
+<br><br>
 
 ## 🚀 Main Features
 [-> 프로젝트 실행 영상](https://www.youtube.com/watch?v=_Gd4pED8VK8)
@@ -45,7 +47,6 @@
   This creates a bi-directional family relationship and allows both parties to set their preferred nicknames.  
   The contract also supports removing family members, changing nicknames, and viewing the family list, enabling secure management of family relationships on the blockchain._
 
----
 
 ### 🪙 NFT 발행(Minting) 기능  
 **NFT Minting**
@@ -58,7 +59,6 @@
   Metadata such as name, description, image, creator address, and timestamps are stored on-chain, and the unique token ID is automatically incremented.  
   This feature enables anyone to easily create their own NFT._
 
----
 
 ### 🤝 NFT 가족 공유 기능  
 **NFT Family Sharing**
@@ -71,7 +71,7 @@
   This feature integrates with the family management contract to ensure that only users with a family relationship can be granted viewing rights to the NFT.  
   Shared NFTs can have their sharing revoked at any time, and the contract supports querying sharing history and checking access permissions._
 
----
+<br><br>
 
 ## 📖 How to use
 
