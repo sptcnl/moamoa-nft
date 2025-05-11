@@ -103,11 +103,12 @@ Make sure your .env file is in the project root directory before building the Do
 <a name="team"></a>
 
 ## Team
+기획: 공통
 | **Name**         | **GitHub Handle**                          | **Responsibilities**                                                                                           |
 |------------------|------------------------------------------------|-------------------------------------------------------------------------------------------|
 | **Kyunghoon Kim**  | [@Lachrym1352](https://github.com/Lachrym1352)   | NFT 민팅 관련 기능 |
 | **Nahee Kim**  | [@sptcnl](https://github.com/sptcnl)   | NFT 가족 공유 관련 기능 |
-| **Jaemin Song** | [@JmeSong](https://github.com/JmeSong)   | 사업개발 |
+| **Jaemin Song** | [@JmeSong](https://github.com/JmeSong)   | 사업개발(Web3/NFT 관련 사업모델 리서치, 사업화 아이디어 제안 등) |
 | **Younghun Lee** | [@leeyounghuncom](https://github.com/leeyounghuncom)   | 지갑 로그인/로그아웃, 가족 관련 기능 |
 
 <br><br><br>
