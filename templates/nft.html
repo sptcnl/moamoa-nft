@@ -1658,12 +1658,17 @@
             }
             
             try {
-                showOverlayLoader();
-                overlayLoadingMessage.style.display = 'block'
-                
+
+                // NFT 정보 변경 확인
+                let metadataChanged = false;
                 let imageBase64 = currentNft.image;
-                
-                // 새 이미지가 선택되었으면 Base64로 변환
+
+                // 이름 or 설명 변경 확인
+                if (name !== currentNft.name || description !== currentNft.description) {
+                    metadataChanged = true;
+                }
+
+                // 이미지 변경 확인
                 if (imageFile) {
                     imageBase64 = await convertImageToBase64(imageFile);
                     
@@ -1678,11 +1683,24 @@
                     }
                 }
                 
-                // 스마트 컨트랙트에 update 함수가 있는지 확인
-                if (!contract.methods.updateMetadata) {
-                    showNotification('NFT 수정 기능이 컨트랙트에 구현되어 있지 않습니다.', 'error');
-                    hideLoader();
+                let sharingChange = selectedAddresses.length > 0 || unselectedAddresses.length > 0;
+                
+                if (!metadataChanged && !sharingChange) {
+                    showNotification('변경된 내용이 없습니다.', closeNftDetailModal);
                     return;
+                }
+
+                showOverlayLoader();
+                overlayLoadingMessage.style.display = 'block'
+                
+                
+                if (metadataChanged) {
+                    // 스마트 컨트랙트에 update 함수가 있는지 확인
+                    if (!contract.methods.updateMetadata) {
+                        showNotification('NFT 수정 기능이 컨트랙트에 구현되어 있지 않습니다.', 'error');
+                        hideLoader();
+                        return;
+                    }
                 }
                 
                 // 이미지 크기에 따라 가스 한도 동적 계산
@@ -1700,10 +1718,14 @@
 
                 await Promise.all([txPromise1, txPromise2]);
 
-                // 현재 선택된 NFT 정보 업데이트
-                currentNft.name = name;
-                currentNft.description = description;
-                currentNft.image = imageBase64;
+                if (metadataChanged) {
+                    // 현재 선택된 NFT 정보 업데이트
+                    currentNft.name = name;
+                    currentNft.description = description;
+                    if (imageBase64) {
+                        currentNft.image = imageBase64;
+                    }
+                }
                 
                 overlayLoadingMessage.style.display = 'none'
                 closeNftDetailModal();
