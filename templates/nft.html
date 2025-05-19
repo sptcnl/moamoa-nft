@@ -1357,6 +1357,7 @@
                 }
                 showNotification('NFT 발행 중 오류가 발생했습니다: ' + errorMsg, 'error');
             } finally {
+                hideOverlayLoader();
             }
         }
         
@@ -1767,6 +1768,7 @@
                 hideOverlayLoader();
                 showNotification('NFT 수정 중 오류가 발생했습니다: ' + errorMsg, 'error');
             } finally {
+                hideOverlayLoader();
             }
         }
     </script>
