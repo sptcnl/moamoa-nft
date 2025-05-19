@@ -91,7 +91,7 @@ NFT_SHARE_CONTRACT_ADDRESS=YOUR_NFT_SHARE_CONTRACT_ADDRESS
 docker build -t (image_name) .
 
 # Run a container from the image
-docker run -it --name (container_name) (image_name)
+docker run -it --name (container_name) -p 8000:8000 (image_name)
 ```
 <b>Tips:</b>
 <br>
