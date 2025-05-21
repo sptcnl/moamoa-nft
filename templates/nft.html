@@ -1042,13 +1042,13 @@
         }
 
         // 업로드 Modal 열기
-        function openUploadModal() {
+        async function openUploadModal() {
             if (!isConnected) {
                 showNotification('NFT를 발행하려면 먼저 지갑을 연결하세요', 'error');
                 return;
             }
             
-            loadFamilyAddresses();
+            await loadFamilyAddresses();
             uploadModal.style.display = 'block';
             document.body.style.overflow = 'hidden'; // 배경 스크롤 방지
         }
@@ -1184,6 +1184,12 @@
 
                 // 가족 구성원 주소 목록 가져오기
                 const members = await fam_contract.methods.getMyFamilyMembers().call({ from: userAccount });
+
+                if (share === true && members) {
+                    console.log("-----------수정 모드: 가족 멤버 있음-----------")
+                } else if (share === false && members) {
+                    console.log("-----------업로드 모드: 가족멤버 있음-----------")
+                }
 
                 if (!members || members.length === 0) {
                     console.log("멤버 없음으로 인식");
@@ -1581,11 +1587,11 @@
         }
         
         // 수정 모드로 전환
-        function switchToEditMode() {
+        async function switchToEditMode() {
             const tokenId = document.getElementById('detailTokenId').textContent;
+            await loadFamilyAddresses(true, tokenId);
             detailViewMode.style.display = 'none';
             detailEditMode.style.display = 'block';
-            loadFamilyAddresses(true, tokenId);
             console.log("토큰: ", tokenId);
         }
 
