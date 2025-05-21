@@ -72,7 +72,11 @@
             myAddress = accounts[0]; // 첫 번째 계정(내 지갑 주소)
             console.log(myAddress);
             document.getElementById('my-address').innerText = myAddress; // 화면에 내 주소 표시
-            document.getElementById('userWalletAddress').innerText = myAddress.substring(0, 6) + '...' + myAddress.substring(myAddress.length - 4);
+            // userWalletAddress가 있을 때만 값 할당
+            const userWalletAddressElem = document.getElementById('userWalletAddress');
+            if (userWalletAddressElem) {
+                userWalletAddressElem.innerText = myAddress.substring(0, 6) + '...' + myAddress.substring(myAddress.length - 4);
+            }
 
             // web3 객체 생성 (이더리움 네트워크와 통신)
             const web3 = new Web3(window.ethereum);
