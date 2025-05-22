@@ -34,7 +34,7 @@
 <br><br>
 
 ## 🚀 Main Features
-[-> 프로젝트 실행 영상](https://www.youtube.com/watch?v=_Gd4pED8VK8)
+[-> 프로젝트 실행 영상](https://youtu.be/SV7ZxiR2dhY?si=VNidVO5PXDxccpkQ)
 
 ### 👨‍👩‍👧‍👦 가족 등록 및 관리 기능  
 **Family Registration & Management**
