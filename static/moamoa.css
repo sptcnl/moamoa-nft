@@ -1,0 +1,121 @@
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&display=swap');
+
+:root { --primary-color: #6c5ce7; --secondary-color: #a29bfe; --accent-color: #fd79a8; --text-color: #2d3436; --light-color: #f5f6fa; --border-color: #dfe6e9; --card-bg: #ffffff; --header-bg: #f1f2f6; }
+
+* { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Noto Sans KR', sans-serif; }
+
+body { background-color: #f9f9f9; color: var(--text-color); line-height: 1.6; padding: 0; }
+header { background-color: var(--header-bg); padding: 15px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); }
+header span { font-size: 1.2rem; font-weight: 700; color: var(--primary-color); }
+label { display: block; margin-bottom: 8px; font-weight: 500; color: var(--text-color); }
+input,textarea { width: 100%; padding: 12px; border: 1px solid var(--border-color); border-radius: 8px; font-size: 0.95rem; transition: border 0.3s ease; }
+input:focus, textarea:focus { outline: none; border-color: var(--primary-color); box-shadow: 0 0 0 2px rgba(108, 92, 231, 0.2); }
+table { border-collapse: collapse; width: 100%; }
+th { background: #f0f0f0; }
+th,td { border: 1px solid #aaa;padding: 8px; text-align: center; }
+
+
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+@keyframes slideUp { from { transform: translateY(50px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+@keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
+#userWalletInfo { font-size: 0.8rem; }
+#userWalletAddress { font-family: monospace; margin-right: 10px; }
+#logoutBtn { padding: 6px 12px; border-radius: 6px; text-decoration: none; font-size: 0.9rem; align-items: center; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); border: none; cursor: pointer; transition: background 0.2s; margin-right: 10px; background: var(--accent-color); color: #fff; }
+#qr-reader { width: 300px; margin: 0 auto 10px auto; }
+#qr-reader__dashboard_section_swaplink { display: none; }
+
+.container { max-width: 1200px; margin: 0 auto; background: var(--card-bg); border-radius: 12px; box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08); padding: 40px 30px 30px 30px; }
+.upload-btn { background-color: var(--header-bg); border: 2px solid var(--primary-color); color: var(--primary-color); padding: 12px 15px; cursor: pointer; margin: 0 20px 20px; width: calc(100% - 40px); text-align: center; font-weight: 500; border-radius: 8px; transition: all 0.3s ease; box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); }
+.upload-btn:hover { background-color: var(--primary-color); color: white; transform: translateY(-2px); box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); }
+.nft-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; padding: 0 20px; }
+.nft-item { text-align: center; background-color: var(--card-bg); border-radius: 10px; overflow: hidden; box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1); transition: transform 0.3s ease, box-shadow 0.3s ease; }
+.nft-item:hover { transform: translateY(-5px); box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2); }
+.nft-image { width: 100%; height: 150px; background-color: #eee; display: flex; justify-content: center; align-items: center; }
+.nft-name { padding: 12px; font-size: 0.95rem; color: var(--text-color); font-weight: 500; }
+.nft-section-title { margin-bottom: 10px; }
+
+.empty-state { text-align: center; padding: 40px 20px; color: #aaa; font-size: 1.2rem; grid-column: 1 / -1; background-color: var(--card-bg); border-radius: 10px; box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1); }
+
+/* 모달 스타일 */
+.modal { display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.6); animation: fadeIn 0.3s ease; overflow-y: auto; /* 내용이 많을 경우 스크롤 허용 */ }
+.modal-content { background-color: white; margin: 5% auto; width: 85%; max-width: 500px; padding: 25px; position: relative; border-radius: 15px; box-shadow: 0 5px 25px rgba(0, 0, 0, 0.3); animation: slideUp 0.4s ease; }
+
+.close { position: absolute; right: 15px; top: 10px; font-size: 24px; cursor: pointer; color: #aaa; transition: color 0.3s ease; }
+.close:hover { color: var(--primary-color); }
+.form-group { margin-bottom: 20px; }
+
+.submit-btn { background-color: var(--primary-color); color: white; padding: 12px; border: none; width: 100%; margin-top: 15px; cursor: pointer; border-radius: 8px; font-weight: 500; font-size: 1rem; transition: all 0.3s ease; }
+.submit-btn:hover { background-color: var(--secondary-color); transform: translateY(-2px); box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); }
+
+.image-preview { width: 100%; height: 180px; background-color: var(--light-color); border: 2px dashed var(--border-color); margin-top: 10px; display: flex; justify-content: center; align-items: center; border-radius: 8px; overflow: hidden; transition: border-color 0.3s ease; }
+.image-preview:hover { border-color: var(--primary-color); }
+.image-preview img { max-width: 100%; max-height: 100%; object-fit: contain; }
+
+/* 로딩 애니메이션 */
+.loader { display: none; border: 5px solid #f3f3f3; border-top: 5px solid var(--primary-color); border-radius: 50%; width: 40px; height: 40px; animation: spin 1s linear infinite; margin: 20px auto; }
+.loading-overlay { visibility: hidden; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0, 0, 0, 0.3); /* 투명한 어두운 배경 */ display: flex; justify-content: center; align-items: center; z-index: 9999; /* 다른 요소 위에 표시 */ }
+.loader-container { display: flex; flex-direction: column; align-items: center; }
+.loading-message { margin-top: 12px; color: #222; font-size: 1rem; text-align: center; background: rgba(255, 255, 255, 0.747); border-radius: 8px; padding: 10px 18px; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.07); line-height: 1.6; font-weight: 500; }
+
+/* 알림 메시지 */
+.notification { position: fixed; bottom: 20px; right: 20px; padding: 15px 20px; border-radius: 10px; color: white !important; font-weight: 500; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15); transform: translateY(100px); opacity: 0; transition: all 0.5s ease; z-index: 2000; }
+.notification.show { transform: translateY(0); opacity: 1; }
+.notification.success { background-color: #00b894; }
+.notification.error { background-color: #e74c3c; }
+.notification.common { background-color: #646464; }
+
+/* 지갑 연결 버튼 */
+.connect-wallet-btn { background-color: var(--secondary-color); color: white; padding: 12px 25px; border: none; border-radius: 8px; cursor: pointer; font-weight: 500; transition: all 0.3s ease; margin: 20px auto; display: block; }
+.connect-wallet-btn:hover { background-color: var(--primary-color); transform: translateY(-2px); box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); }
+
+/* 가족 주소 목록 스타일 */
+.family-address-list { max-height: 150px; overflow-y: auto; border: 1px solid var(--border-color); border-radius: 8px; padding: 8px; background-color: var(--light-color); }
+.family-address-item { display: flex; align-items: center; margin-bottom: 5px; padding: 5px; border-radius: 4px; transition: background-color 0.2s; }
+
+.family-address-item:hover { background-color: rgba(0, 0, 0, 0.05); }
+.family-address-item input[type="checkbox"] { margin-right: 10px; width: auto; cursor: pointer; }
+.family-nickname { font-weight: 500; margin-right: 8px; }
+.family-address { font-size: 0.8rem; color: #666; word-break: break-all; flex: 1; }
+
+.no-family { text-align: center; color: #aaa; padding: 10px; }
+.detail-text { padding: 10px; background-color: #f9f9f9; border-radius: 5px; margin-top: 5px; min-height: 20px; word-break: break-all; }
+.button-group { margin-top: 15px; }
+
+.header-btn { background-color: var(--secondary-color); color: white; padding: 6px 12px; border-radius: 6px; text-decoration: none; font-size: 0.9rem; display: flex; align-items: center; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); border: none; cursor: pointer; transition: background 0.2s; margin-right: 10px; }
+.header-btn:hover { background-color: var(--primary-color); }
+
+.nickname-edit-form input { margin-bottom: 10px; }
+
+/* 메인페이지 전용 */
+.login-btn { background-color: var(--secondary-color); color: white; padding: 14px 0; border: none; border-radius: 8px; cursor: pointer; font-weight: 500; font-size: 1.1rem; width: 100%; margin-top: 20px; transition: all 0.3s; box-shadow: 0 2px 5px rgba(0, 0, 0, 0.08); }
+.login-btn:hover { background-color: var(--primary-color); box-shadow: 0 4px 12px rgba(0, 0, 0, 0.13); }
+
+.wallet-img { display: block; margin: 0 auto 18px auto; width: 90px; border-radius: 12px; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.07); transition: transform 0.2s; }
+.wallet-img:hover { transform: scale(1.05); }
+
+.desc { text-align: center; color: #888; font-size: 1rem; margin-bottom: 18px; }
+
+.qr-btn { background-color: var(--secondary-color); color: white; border: none; border-radius: 8px; padding: 8px 18px; font-weight: 500; cursor: pointer; margin-bottom: 18px; transition: background 0.2s; }
+.qr-btn:hover { background-color: var(--primary-color); }
+
+.action-btn { background-color: var(--primary-color); color: white; border: none; border-radius: 6px; padding: 6px 14px; font-weight: 500; cursor: pointer; transition: background 0.2s; }
+.action-btn:hover { background-color: var(--secondary-color); }
+
+/* 테이블, 폼, 기타 공통 스타일은 필요시 추가 */
+.main-card { max-width: 400px; margin: 0 auto; padding: 40px 20px; background: var(--card-bg); border-radius: 12px; box-shadow: 0 3px 10px rgba(0, 0, 0, 0.07); text-align: center; }
+.main-title { text-align: center; color: var(--primary-color); font-size: 2rem; font-weight: 700; margin-bottom: 18px; letter-spacing: 1px; }
+.main-desc { color: #888; font-size: 1.05rem; margin-bottom: 30px; text-align: center; }
+.main-kaikas-img { width: 90px; height: 90px; border-radius: 50%; box-shadow: 0 2px 8px rgba(108, 92, 231, 0.08); background: #f5f6fa; padding: 10px; transition: box-shadow 0.2s; display: block; margin: 0 auto; }
+.main-kaikas-btn { width: 100%; max-width: 260px; margin: 0 auto; display: block; }
+
+
+.owner { color: #1976d2; font-weight: bold; }
+.me { color: #43a047; font-weight: bold; }
+.error { color: red; }
+.success { color: green; }
+
+.header-row { display: flex; align-items: center; }
+.header-title { margin-right: 20px; font-size: 1.2rem; font-weight: 700; color: var(--primary-color); }
+
+@media (max-height: 700px) { .modal-content { margin: 2% auto; } }

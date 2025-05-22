@@ -62,7 +62,10 @@ async def read_root(request: Request):
     if request.session.get("wallet_login"):
         # 로그인 완료 시 가족 관리 페이지 렌더링
         return templates.TemplateResponse("family.html", {
-            "request": request, "contract_address": FAM_CONTRACT_ADDRESS, "contract_abi": contract_abi
+            "request": request, 
+            "contract_address": FAM_CONTRACT_ADDRESS, 
+            "contract_abi": contract_abi,
+            "is_logged_in": True,
         })
     # 로그인 전이면 메인 페이지 렌더링
     return templates.TemplateResponse("main.html", {"request": request})
@@ -75,7 +78,7 @@ async def family_page(request: Request):
         "request": request, 
         "contract_address": FAM_CONTRACT_ADDRESS, 
         "contract_abi": contract_abi, 
-        "is_logged_in": is_logged_in
+        "is_logged_in": is_logged_in,
     })
 
 # NFT 페이지 - nft.html 렌더링
@@ -90,7 +93,7 @@ async def nft_page(request: Request):
         "nft_share_contract_abi": nft_share_abi, 
         "fam_contract_address": FAM_CONTRACT_ADDRESS,
         "fam_contract_abi": contract_abi,
-        "is_logged_in": is_logged_in
+        "is_logged_in": is_logged_in,
     })
 
 # NFT Share 페이지 - nft_share_test.html 렌더링
@@ -103,13 +106,16 @@ async def nft_page(request: Request):
         "contract_abi": nft_share_abi, 
         "fam_contract_address": FAM_CONTRACT_ADDRESS, 
         "fam_contract_abi": contract_abi, 
-        "is_logged_in": is_logged_in
+        "is_logged_in": is_logged_in,
     })
 
 # 지갑 로그인 성공 시 세션에 wallet_login 값을 true로 저장하는
 @app.post("/wallet-login")
 async def wallet_login(request: Request):
+    data = await request.json()
+    address = data.get("address")
     request.session["wallet_login"] = True
+    request.session["wallet_address"] = address
     return Response(status_code=204)
 
 # 로그아웃
